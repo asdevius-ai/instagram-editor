@@ -122,18 +122,100 @@ label.f textarea{min-height:92px;resize:vertical}
 
 #toast{position:fixed;left:50%;bottom:calc(84px + var(--safe-b));transform:translateX(-50%);background:#262626;color:#fff;padding:9px 16px;border-radius:20px;z-index:40;font-size:14px;max-width:90%;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s}
 #toast.s{opacity:1}
+
+/* instagram-like details */
+:root{--tag:#00376b}
+@media (prefers-color-scheme:dark){:root{--tag:#e0f1ff}}
+.tag{color:var(--tag)}
+.link{color:var(--tag)}
+.top .un{display:flex;align-items:center;gap:4px;flex:1;min-width:0}
+.top .un>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top .chev{width:14px;height:14px;flex:none}
+.top .ic{width:26px;height:26px;display:grid;place-items:center;margin-left:14px;flex:none}
+.top .ic svg{width:26px;height:26px}
+.badge{width:14px;height:14px;vertical-align:-1px;margin-left:4px;flex:none}
+.editor{display:flex;align-items:center;gap:6px;padding:6px 16px;background:var(--soft);font-size:12px;color:var(--muted);overflow-x:auto;scrollbar-width:none}
+.editor::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px dashed var(--muted);border-radius:16px;padding:4px 10px;font-size:13px;color:var(--fg);white-space:nowrap}
+.chip.on{background:var(--fg);color:var(--bg);border-style:solid}
+.avwrap{padding:3px;border-radius:50%;flex:none}
+.avwrap .avatar{width:80px;height:80px}
+.avwrap.ring,.avs.ring{background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5)}
+.avwrap.ring .avatar,.avs.ring .avatar{border:3px solid var(--bg)}
+.lk{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+.pro{background:var(--soft);border-radius:10px;padding:10px 12px;margin-top:12px;display:grid;gap:1px}
+.pro span{font-size:13px}
+.pro small{color:var(--muted);font-size:12px}
+.btn.sq{flex:none;width:38px;padding:0;display:grid;place-items:center}
+.btn.sq svg{width:18px;height:18px}
+.cell .pin{position:absolute;top:6px;left:6px;width:18px;height:18px;filter:drop-shadow(0 0 2px rgba(0,0,0,.6))}
+label.f.chk{display:flex;align-items:center;gap:10px}
+label.f.chk input{width:auto;margin:0;transform:scale(1.25)}
+body.clean .editor,body.clean .nav{display:none!important}
+body.clean{padding-bottom:var(--safe-b)}
+#exitClean{display:none;position:fixed;right:12px;bottom:calc(12px + var(--safe-b));width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;z-index:9;place-items:center;font-size:16px}
+body.clean #exitClean{display:grid}
+
+/* feed viewer */
+#viewer{position:fixed;inset:0;z-index:15;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#viewer .vwrap{max-width:560px;margin:0 auto;padding-bottom:calc(30px + var(--safe-b))}
+.vtop{position:sticky;top:0;z-index:2;background:var(--bg);display:flex;align-items:center;gap:12px;padding:calc(8px + var(--safe-t)) 12px 8px;border-bottom:1px solid var(--line)}
+.vtop .ic{width:28px;height:28px;display:grid;place-items:center}
+.vtop .ic svg{width:26px;height:26px}
+.vtop div{flex:1;text-align:center;margin-right:40px;line-height:1.15}
+.vtop small{display:block;color:var(--muted);font-size:12px}
+.vtop b{font-size:16px}
+.fp{scroll-margin-top:calc(56px + var(--safe-t));padding-bottom:14px}
+.fh{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.avs{padding:2px;border-radius:50%;flex:none}
+.avs .avatar{width:32px;height:32px;border:0}
+.avs.ring .avatar{border-width:2px}
+.who{flex:1;min-width:0;line-height:1.2}
+.who b{font-size:14px}
+.who small{display:block;font-size:12px}
+.ic{display:grid;place-items:center}
+.fh .ic{width:28px;height:28px}
+.fh .ic svg{width:22px;height:22px}
+.fm{position:relative}
+.fslides{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.fslides::-webkit-scrollbar{display:none}
+.fslide{flex:none;width:100%;scroll-snap-align:center;aspect-ratio:4/5;background:var(--soft)}
+.fslide img{width:100%;height:100%;object-fit:cover;display:block}
+.pager{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.65);color:#fff;border-radius:12px;padding:2px 9px;font-size:12px}
+.acts{display:flex;align-items:center;gap:14px;padding:10px 12px 6px;position:relative}
+.acts .ic{width:26px;height:26px}
+.acts .ic svg{width:26px;height:26px}
+.acts .ic:last-child{margin-left:auto}
+.acts .ic.lk-on svg{fill:#ed4956;stroke:#ed4956}
+.acts .ic.sv-on svg{fill:currentColor}
+.dots{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;gap:4px}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--muted);opacity:.5}
+.dots i.a{background:var(--accent);opacity:1}
+.likes,.fc,.cm,.dt{padding:0 12px}
+.likes{font-size:14px;margin-bottom:4px}
+.fc{font-size:14px;white-space:pre-wrap;word-break:break-word}
+.fc .more{color:var(--muted);font-size:14px}
+.cm{color:var(--muted);font-size:14px;margin-top:4px}
+.dt{color:var(--muted);font-size:11px;margin-top:4px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div id="v-feed">
     <div class="top">
-      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-      <span class="grow" id="topname"></span>
+      <span class="un"><span id="topname"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+      <button class="ic" data-act="addPhotos" aria-label="Додати"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M12 8v8M8 12h8"/></svg></button>
+      <button class="ic" data-act="fake" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    </div>
+    <div class="editor" id="editor">
+      <span>Редактор:</span>
+      <button class="chip" data-act="addPhotos">＋ Фото</button>
+      <button class="chip" data-act="toggleReorder" id="btnReorder">↕ Порядок</button>
+      <button class="chip" data-act="toggleClean">👁 Чистий вигляд</button>
     </div>
     <div class="prof">
       <div class="row1">
-        <div class="avatar" id="avatar"></div>
+        <div class="avwrap" id="avwrap"><div class="avatar" id="avatar"></div></div>
         <div class="stats">
           <div><b id="stPosts">0</b><span>дописи</span></div>
           <div><b id="stFol"></b><span>підписники</span></div>
@@ -144,10 +226,11 @@ label.f textarea{min-height:92px;resize:vertical}
       <div class="cat" id="pCat"></div>
       <div class="bio" id="pBio"></div>
       <div class="link" id="pLink"></div>
+      <div class="pro hide" id="pro"><b>Професійна панель</b><span id="proViews"></span><small>Інструменти й ресурси для вашого бізнесу.</small></div>
       <div class="btns">
         <button class="btn" data-act="editProfile">Редагувати профіль</button>
-        <button class="btn" data-act="addPhotos">＋ Фото</button>
-        <button class="btn" data-act="toggleReorder" id="btnReorder">Порядок</button>
+        <button class="btn" data-act="fake">Поділитися профілем</button>
+        <button class="btn sq" data-act="fake" aria-label="Додати друзів"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20a6.5 6.5 0 0 1 12-3M19 9v6M16 12h6"/></svg></button>
       </div>
       <div class="hl" id="hl"></div>
     </div>
@@ -167,6 +250,11 @@ label.f textarea{min-height:92px;resize:vertical}
   <button data-act="tab" data-tab="move"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0 4 4m-4-4L8 8"/><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></svg>В Instagram</button>
 </nav>
 
+<div id="viewer" class="hide"><div class="vwrap">
+  <div class="vtop"><button class="ic" data-act="closeViewer" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg></button><div><small id="vuser"></small><b>Дописи</b></div></div>
+  <div id="vlist"></div>
+</div></div>
+<button id="exitClean" data-act="toggleClean" aria-label="Вийти з чистого вигляду">✕</button>
 <div id="sheet" class="hide"></div>
 <div id="toast"></div>
 <input type="file" id="fileIn" accept="image/*" multiple hidden>
@@ -210,7 +298,7 @@ const imgKeys = () => idb('img', 'readonly', s => s.getAllKeys());
 
 /* ---------- state ---------- */
 const blank = () => ({
-  profile: { username: 'your_username', name: 'Твоє ім’я', category: '', bio: 'Напиши тут біо ✨\nДруга строчка', link: '', avatar: null, followers: '0', following: '0' },
+  profile: { username: 'your_username', name: 'Твоє ім’я', category: '', bio: 'Напиши тут біо ✨\nДруга строчка', link: '', avatar: null, followers: '0', following: '0', verified: false, story: false, pro: false, views: '' },
   highlights: [],
   posts: []   // {id, imgs:[imgId], caption, done}
 });
@@ -218,7 +306,20 @@ let S = blank();
 const urls = {};            // imgId -> objectURL
 let reorder = false;
 let saveT;
-function save() { clearTimeout(saveT); saveT = setTimeout(() => kvSet('state', S).catch(() => toast('Не вдалося зберегти 😕')), 250); }
+function normalize() { S.posts = [...S.posts.filter(p => p.pinned), ...S.posts.filter(p => !p.pinned)]; }   // закріплені — завжди зверху
+function today() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function fmtDate(iso) {
+  const d = new Date((iso || '') + 'T12:00:00'); if (!iso || isNaN(d)) return '';
+  const o = { day: 'numeric', month: 'long' }; if (d.getFullYear() !== new Date().getFullYear()) o.year = 'numeric';
+  return d.toLocaleDateString('uk-UA', o).toUpperCase();
+}
+const RE_TAG = /(^|[^\p{L}\p{N}_])([#@][\p{L}\p{N}_.]*[\p{L}\p{N}_])/gu;
+function rich(text) {   // екранування + хештеги/згадки синім
+  text = String(text ?? ''); let out = '', last = 0;
+  for (const m of text.matchAll(RE_TAG)) { const st = m.index + m[1].length; out += esc(text.slice(last, st)) + `<span class="tag">${esc(m[2])}</span>`; last = st + m[2].length; }
+  return out + esc(text.slice(last));
+}
+function save() { normalize(); clearTimeout(saveT); saveT = setTimeout(() => kvSet('state', S).catch(() => toast('Не вдалося зберегти 😕')), 250); }
 
 async function addImg(blob) {
   const id = uid();
@@ -267,19 +368,26 @@ function pickFiles(input) {
 
 /* ---------- render: profile ---------- */
 const ICON_CAROUSEL = '<svg class="car" viewBox="0 0 24 24" fill="#fff"><path d="M7 3h12a2 2 0 0 1 2 2v12h-2V5H7z"/><rect x="3" y="7" width="14" height="14" rx="2"/></svg>';
+const BADGE = '<svg class="badge" viewBox="0 0 24 24"><path fill="#0095f6" d="M12 1l2.4 1.9 3-.4 1.1 2.8 2.8 1.1-.4 3L22.8 12l-1.9 2.4.4 3-2.8 1.1-1.1 2.8-3-.4L12 23l-2.4-1.9-3 .4-1.1-2.8-2.8-1.1.4-3L1.2 12l1.9-2.4-.4-3 2.8-1.1 1.1-2.8 3 .4z"/><path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const ICON_LINK = '<svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>';
+const ICON_PIN = '<svg class="pin" viewBox="0 0 24 24" fill="#fff"><path d="M15 3l6 6-2.200 1-3 3 .6 4.200-1.600 1.600-3.800-3.800L6.500 20.500 5.500 19.500l4.500-4.200-3.800-3.800L7.800 9.900 12 10.500l3-3z"/></svg>';
+const avStyle = id => id && urls[id] ? `background-image:url(${urls[id]})` : '';
 function renderProfile() {
   const p = S.profile;
-  $('#topname').textContent = p.username || 'username';
+  $('#topname').innerHTML = esc(p.username || 'username') + (p.verified ? BADGE : '');
   const av = $('#avatar');
   av.style.backgroundImage = p.avatar && urls[p.avatar] ? `url(${urls[p.avatar]})` : '';
   av.textContent = p.avatar ? '' : '👤';
+  $('#avwrap').classList.toggle('ring', !!p.story);
   $('#stPosts').textContent = S.posts.length;
   $('#stFol').textContent = p.followers || '0';
   $('#stFg').textContent = p.following || '0';
   $('#pName').textContent = p.name || '';
   $('#pCat').textContent = p.category || '';
-  $('#pBio').textContent = p.bio || '';
-  $('#pLink').textContent = p.link || '';
+  $('#pBio').innerHTML = rich(p.bio);
+  $('#pLink').innerHTML = p.link ? ICON_LINK + esc(p.link) : '';
+  $('#pro').classList.toggle('hide', !p.pro);
+  $('#proViews').textContent = (p.views || '0') + ' переглядів за останні 30 днів';
   $('#hl').innerHTML =
     S.highlights.map(h => `<button data-act="editHl" data-id="${h.id}"><div class="c" style="${h.cover && urls[h.cover] ? `background-image:url(${urls[h.cover]})` : ''}">${h.cover ? '' : '★'}</div><span>${esc(h.title || ' ')}</span></button>`).join('') +
     `<button data-act="editHl" data-id=""><div class="c">＋</div><span>Створити</span></button>`;
@@ -288,15 +396,60 @@ function renderGrid() {
   const g = $('#grid');
   g.className = reorder ? 'reorder' : '';
   $('#btnReorder').classList.toggle('on', reorder);
-  $('#btnReorder').textContent = reorder ? 'Готово' : 'Порядок';
+  $('#btnReorder').textContent = reorder ? '✓ Готово' : '↕ Порядок';
   if (!S.posts.length) {
     g.innerHTML = '<div class="empty"><b>Поки порожньо</b>Натисни «＋ Фото» і вибери знімки з галереї — вони з’являться в сітці так, як виглядатимуть в Instagram.</div>';
     return;
   }
   g.innerHTML = '<div class="grid">' + S.posts.map(p =>
-    `<div class="cell" data-id="${p.id}"><img src="${urls[p.imgs[0]] || ''}" alt="" draggable="false">${p.imgs.length > 1 ? ICON_CAROUSEL : ''}</div>`).join('') + '</div>';
+    `<div class="cell" data-id="${p.id}"><img src="${urls[p.imgs[0]] || ''}" alt="" draggable="false">${p.pinned ? ICON_PIN : ''}${p.imgs.length > 1 ? ICON_CAROUSEL : ''}</div>`).join('') + '</div>';
 }
-function renderAll() { renderProfile(); renderGrid(); if (!$('#v-move').classList.contains('hide')) renderMove(); }
+const IC = {
+  heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20.5s-8-4.7-8-10.3A4.5 4.5 0 0 1 12 7.6a4.5 4.5 0 0 1 8 2.6c0 5.6-8 10.3-8 10.3z"/></svg>',
+  comment: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-3.7-7l3.2-.5-.8 3.3A8.4 8.4 0 0 1 20.5 12z"/></svg>',
+  share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></svg>',
+  save: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.500L6 21z"/></svg>',
+  more: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>'
+};
+const viewerOpen = () => !$('#viewer').classList.contains('hide');
+function renderViewer() {
+  const p = S.profile, vw = $('#viewer'), keep = vw.scrollTop;
+  $('#vuser').textContent = p.username;
+  $('#vlist').innerHTML = S.posts.map(x => {
+    const cap = x.caption || '';
+    const capHtml = cap.length > 110
+      ? `<span class="short">${rich(cap.slice(0, 110))}</span><button class="more" data-act="more">… ще</button><span class="full hide">${rich(cap)}</span>`
+      : rich(cap);
+    const n = x.imgs.length;
+    return `<article class="fp" data-id="${x.id}">
+      <div class="fh"><div class="avs ${p.story ? 'ring' : ''}"><div class="avatar" style="${avStyle(p.avatar)}"></div></div>
+        <div class="who"><b>${esc(p.username)}${p.verified ? BADGE : ''}</b>${x.place ? `<small>${esc(x.place)}</small>` : ''}</div>
+        <button class="ic" data-act="editPost" data-id="${x.id}" aria-label="Редагувати">${IC.more}</button></div>
+      <div class="fm"><div class="fslides">${x.imgs.map(im => `<div class="fslide"><img src="${urls[im] || ''}" alt=""></div>`).join('')}</div>${n > 1 ? `<span class="pager">1/${n}</span>` : ''}</div>
+      <div class="acts"><button class="ic" data-act="like">${IC.heart}</button><button class="ic" data-act="fake">${IC.comment}</button><button class="ic" data-act="fake">${IC.share}</button>
+        <span class="dots">${n > 1 ? x.imgs.map((_, i) => `<i class="${i ? '' : 'a'}"></i>`).join('') : ''}</span>
+        <button class="ic" data-act="saveMark">${IC.save}</button></div>
+      ${x.likes ? `<div class="likes">Вподобання: <b>${esc(x.likes)}</b></div>` : ''}
+      ${cap ? `<div class="fc"><b>${esc(p.username)}</b> ${capHtml}</div>` : ''}
+      ${x.comments && x.comments !== '0' ? `<div class="cm">Переглянути всі коментарі (${esc(x.comments)})</div>` : ''}
+      <div class="dt">${fmtDate(x.date)}</div></article>`;
+  }).join('') || '<div class="empty"><b>Немає дописів</b></div>';
+  vw.scrollTop = keep;
+}
+function openViewer(id) {
+  $('#viewer').classList.remove('hide');
+  document.body.style.overflow = 'hidden';
+  renderViewer();
+  const a = $(`#viewer .fp[data-id="${id}"]`); if (a) a.scrollIntoView({ block: 'start' });
+}
+function closeViewer() { $('#viewer').classList.add('hide'); document.body.style.overflow = ''; }
+$('#viewer').addEventListener('scroll', e => {
+  const t = e.target; if (!t.classList || !t.classList.contains('fslides')) return;
+  const i = Math.round(t.scrollLeft / t.clientWidth), art = t.closest('.fp');
+  art.querySelectorAll('.dots i').forEach((d, k) => d.classList.toggle('a', k === i));
+  const pg = art.querySelector('.pager'); if (pg) pg.textContent = (i + 1) + '/' + t.children.length;
+}, true);
+function renderAll() { renderProfile(); renderGrid(); if (viewerOpen()) renderViewer(); if (!$('#v-move').classList.contains('hide')) renderMove(); }
 
 /* ---------- sheets ---------- */
 function openSheet(title, body, onClose) {
@@ -309,7 +462,7 @@ function openSheet(title, body, onClose) {
 function closeSheet() {
   const s = $('#sheet');
   s.classList.add('hide');
-  document.body.style.overflow = '';
+  document.body.style.overflow = viewerOpen() ? 'hidden' : '';
   const cb = s._onClose; s._onClose = null;
   if (cb) cb();
   save(); renderAll();
@@ -318,19 +471,23 @@ function closeSheet() {
 function editProfile() {
   const p = S.profile;
   const f = (k, label, ml) => `<label class="f"><small>${label}</small>${ml ? `<textarea data-k="${k}">${esc(p[k])}</textarea>` : `<input data-k="${k}" value="${esc(p[k])}">`}</label>`;
+  const c = (k, label) => `<label class="f chk"><input type="checkbox" data-k="${k}" ${p[k] ? 'checked' : ''}> ${label}</label>`;
   openSheet('Редагувати профіль', `
     <div class="pic"><div class="avatar" id="shAv"></div><button class="btn" data-act="pickAvatar">Змінити фото профілю</button></div>
     ${f('username', 'Ім’я користувача')}${f('name', 'Ім’я')}${f('category', 'Категорія / посада (сірий рядок)')}
     ${f('bio', 'Біо (до 150 символів) <span class="cnt" id="bioCnt"></span>', true)}${f('link', 'Посилання')}
     <label class="f"><small>Підписники (можна «1,2 тис.»)</small><input data-k="followers" value="${esc(p.followers)}"></label>
-    <label class="f"><small>Підписки</small><input data-k="following" value="${esc(p.following)}"></label>`);
+    <label class="f"><small>Підписки</small><input data-k="following" value="${esc(p.following)}"></label>
+    ${c('verified', 'Синя галочка біля імені')}${c('story', 'Кільце сторіз навколо фото профілю')}${c('pro', 'Блок «Професійна панель»')}
+    <label class="f"><small>Перегляди за 30 днів (для панелі)</small><input data-k="views" value="${esc(p.views)}"></label>`);
   const sh = $('#sheet');
   const av = () => { const a = $('#shAv'); a.style.backgroundImage = p.avatar && urls[p.avatar] ? `url(${urls[p.avatar]})` : ''; a.textContent = p.avatar ? '' : '👤'; };
   const cnt = () => { const n = [...p.bio].length; const c = $('#bioCnt'); c.textContent = n + '/150'; c.style.color = n > 150 ? 'var(--danger)' : ''; };
   av(); cnt();
   sh.oninput = e => {
     const k = e.target.dataset.k; if (!k) return;
-    p[k] = e.target.value; if (k === 'bio') cnt(); save(); renderProfile();
+    p[k] = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    if (k === 'bio') cnt(); save(); renderProfile();
   };
   sh._avRefresh = av;
 }
@@ -380,7 +537,7 @@ async function addPhotos() {
   for (const f of files) {
     try {
       const id = await addImg(await fileToBlob(f, 1440));
-      S.posts.unshift({ id: uid(), imgs: [id], caption: '', done: false });   // новий допис — зверху, як в Instagram
+      S.posts.unshift({ id: uid(), imgs: [id], caption: '', done: false, pinned: false, likes: '', comments: '', place: '', date: today() });   // новий допис — зверху, як в Instagram
       ok++;
     } catch { /* пропускаємо */ }
   }
@@ -396,18 +553,31 @@ function openPost(id) {
     <div class="slides ${p.imgs.length === 1 ? 'one' : ''}">${p.imgs.map(im => `<div class="slide"><img src="${urls[im] || ''}" alt="">${p.imgs.length > 1 ? `<button class="x" data-act="rmSlide" data-img="${im}">×</button>` : ''}</div>`).join('')}</div>
     <div class="pos"><button class="btn" data-act="mv" data-d="-1" ${i === 0 ? 'disabled style="opacity:.4"' : ''}>← раніше</button><span>позиція ${i + 1} з ${S.posts.length}</span><button class="btn" data-act="mv" data-d="1" ${i === S.posts.length - 1 ? 'disabled style="opacity:.4"' : ''}>пізніше →</button></div>
     <label class="f"><small>Підпис <span class="cnt" id="capCnt"></span></small><textarea id="cap" style="min-height:130px">${esc(p.caption)}</textarea></label>
-    <div style="display:flex;gap:6px"><button class="btn" data-act="addSlide">＋ Ще фото (карусель)</button><button class="btn danger" data-act="delPost">Видалити</button></div>`;
-  if (wasOpen) { const sh = $('.sheet'); const keep = sh.scrollTop; $('#sheet').innerHTML = `<div class="sheet"><div class="bar"><b>Допис</b><button data-act="closeSheet">Готово</button></div>${html}</div>`; $('.sheet').scrollTop = keep; }
+    <label class="f"><small>Місце (геотег)</small><input data-pk="place" value="${esc(p.place || '')}"></label>
+    <div style="display:flex;gap:10px"><label class="f" style="flex:1"><small>Вподобання</small><input data-pk="likes" value="${esc(p.likes || '')}"></label><label class="f" style="flex:1"><small>Коментарі</small><input data-pk="comments" value="${esc(p.comments || '')}"></label></div>
+    <label class="f"><small>Дата</small><input type="date" data-pk="date" value="${esc(p.date || '')}"></label>
+    <label class="f chk"><input type="checkbox" data-pk="pinned" ${p.pinned ? 'checked' : ''}> Закріпити в профілі (до 3)</label>
+    <div style="display:flex;gap:6px;margin-top:6px"><button class="btn" data-act="addSlide">＋ Ще фото (карусель)</button><button class="btn danger" data-act="delPost">Видалити</button></div>`;
+  if (wasOpen) { const keep = $('.sheet').scrollTop; $('#sheet').innerHTML = `<div class="sheet"><div class="bar"><b>Допис</b><button data-act="closeSheet">Готово</button></div>${html}</div>`; $('.sheet').scrollTop = keep; }
   else openSheet('Допис', html);
   const sh = $('#sheet'); sh._post = p;
   const cnt = () => { const c = $('#capCnt'); if (c) c.textContent = [...p.caption].length + '/2200'; };
   cnt();
-  sh.oninput = e => { if (e.target.id === 'cap') { p.caption = e.target.value; cnt(); save(); } };
+  sh.oninput = e => {
+    const t = e.target;
+    if (t.id === 'cap') { p.caption = t.value; cnt(); save(); return; }
+    const k = t.dataset.pk; if (!k) return;
+    if (k === 'pinned') {
+      if (t.checked && S.posts.filter(x => x.pinned).length >= 3) { t.checked = false; toast('Максимум 3 закріплені'); return; }
+      p.pinned = t.checked; normalize(); save(); renderGrid(); openPost(p.id); return;
+    }
+    p[k] = t.value; save();
+  };
 }
 function movePost(d) {
   const p = $('#sheet')._post, i = S.posts.indexOf(p), j = i + d;
   if (j < 0 || j >= S.posts.length) return;
-  S.posts.splice(i, 1); S.posts.splice(j, 0, p);
+  S.posts.splice(i, 1); S.posts.splice(j, 0, p); normalize();
   save(); renderGrid(); openPost(p.id);
 }
 async function addSlide() {
@@ -462,7 +632,7 @@ function endDrag() {
   if (!drag) return;
   const order = [...$('#grid .grid').children].map(c => c.dataset.id);
   const map = Object.fromEntries(S.posts.map(p => [p.id, p]));
-  S.posts = order.map(id => map[id]);
+  S.posts = order.map(id => map[id]); normalize();
   drag.ghost.remove(); drag.cell.classList.remove('ph'); drag = null;
   save(); renderGrid();
 }
@@ -518,7 +688,7 @@ function renderMove() {
       <div class="card step ${x.done ? 'done' : ''}">
         <div class="th" style="background-image:url(${urls[x.imgs[0]] || ''})"></div>
         <div class="tx">
-          <div class="t">№${i + 1}${x.imgs.length > 1 ? ` · ${x.imgs.length} фото` : ''}</div>
+          <div class="t">№${i + 1}${x.imgs.length > 1 ? ` · ${x.imgs.length} фото` : ''}${x.pinned ? ' · 📌 потім закріпити' : ''}</div>
           <div class="cap">${esc(x.caption) || '<i>без підпису</i>'}</div>
           <div class="act">
             <button class="btn" data-act="copyCap" data-id="${x.id}">Підпис</button>
@@ -568,7 +738,7 @@ function setTab(t) {
 document.addEventListener('click', e => {
   if (e.target.id === 'sheet') return closeSheet();
   const cell = e.target.closest('.cell');
-  if (cell && !reorder && !cell.classList.contains('ghost')) return openPost(cell.dataset.id);
+  if (cell && !reorder && !cell.classList.contains('ghost')) return openViewer(cell.dataset.id);
   const el = e.target.closest('[data-act]'); if (!el) return;
   const d = el.dataset, id = d.id;
   switch (d.act) {
@@ -577,6 +747,13 @@ document.addEventListener('click', e => {
     case 'addPhotos': addPhotos(); break;
     case 'toggleReorder': reorder = !reorder; renderGrid(); if (reorder) toast('Тримай фото й перетягуй'); break;
     case 'closeSheet': closeSheet(); break;
+    case 'closeViewer': closeViewer(); break;
+    case 'editPost': openPost(id); break;
+    case 'like': el.classList.toggle('lk-on'); break;
+    case 'saveMark': el.classList.toggle('sv-on'); break;
+    case 'more': { const fc = el.closest('.fc'); fc.querySelector('.short').classList.add('hide'); el.classList.add('hide'); fc.querySelector('.full').classList.remove('hide'); break; }
+    case 'fake': toast('Це лише макет 🙂'); break;
+    case 'toggleClean': { const on = document.body.classList.toggle('clean'); if (on && reorder) { reorder = false; renderGrid(); } break; }
     case 'pickAvatar': pickAvatar(); break;
     case 'editHl': editHl(id); break;
     case 'pickCover': pickCover(); break;
