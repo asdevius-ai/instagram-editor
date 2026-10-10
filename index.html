@@ -14,11 +14,11 @@
 <title>Макет профілю</title>
 <style>
 :root{
-  --bg:#fff;--fg:#111;--muted:#737373;--line:#dbdbdb;--soft:#efefef;--accent:#0095f6;--danger:#ed4956;--card:#fff;
+  --bg:#fff;--fg:#111;--muted:#737373;--line:#dbdbdb;--soft:#efefef;--accent:#0095f6;--danger:#ed4956;--card:#fff;--tag:#00376b;
   --safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);
 }
 @media (prefers-color-scheme:dark){
-  :root{--bg:#000;--fg:#f5f5f5;--muted:#a8a8a8;--line:#262626;--soft:#262626;--card:#121212}
+  :root{--bg:#000;--fg:#f5f5f5;--muted:#a8a8a8;--line:#262626;--soft:#262626;--card:#121212;--tag:#e0f1ff}
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
@@ -27,45 +27,65 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 input,textarea{font:inherit;color:var(--fg)}
 .wrap{max-width:560px;margin:0 auto}
 .hide{display:none!important}
+.tag,.link{color:var(--tag)}
 
 /* top bar */
 .top{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(10px + var(--safe-t)) 16px 10px;display:flex;align-items:center;gap:6px;font-size:19px;font-weight:700;border-bottom:1px solid var(--line)}
-.top .grow{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.top .ico{width:26px;height:26px}
+.top .un{display:flex;align-items:center;gap:4px;flex:1;min-width:0;cursor:pointer}
+.top .un>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top .chev{width:14px;height:14px;flex:none}
+.top .ic{width:26px;height:26px;display:grid;place-items:center;margin-left:14px;flex:none}
+.top .ic svg{width:26px;height:26px}
+.badge{width:14px;height:14px;vertical-align:-1px;margin-left:4px;flex:none}
+.editor{display:flex;align-items:center;gap:6px;padding:6px 16px;background:var(--soft);font-size:12px;color:var(--muted);overflow-x:auto;scrollbar-width:none}
+.editor::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px dashed var(--muted);border-radius:16px;padding:4px 10px;font-size:13px;color:var(--fg);white-space:nowrap}
+.chip.on{background:var(--fg);color:var(--bg);border-style:solid}
 
 /* profile */
 .prof{padding:14px 16px 0}
-.row1{display:flex;align-items:center;gap:22px}
+.row1{display:flex;align-items:center;gap:18px}
 .avatar{width:86px;height:86px;border-radius:50%;background:var(--soft) center/cover;flex:none;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted)}
+.avwrap{padding:3px;border-radius:50%;flex:none;cursor:pointer}
+.avwrap .avatar{width:80px;height:80px}
+.avwrap.ring,.avs.ring{background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5)}
+.avwrap.ring .avatar,.avs.ring .avatar{border:3px solid var(--bg)}
 .stats{flex:1;display:flex;justify-content:space-around;text-align:center}
 .stats b{display:block;font-size:17px}
 .stats span{font-size:13px}
 .name{font-weight:600;margin-top:12px}
 .cat{color:var(--muted);font-size:14px}
 .bio{white-space:pre-wrap;word-break:break-word;margin-top:2px}
-.link{color:#00376b;font-weight:600;word-break:break-all}
-@media (prefers-color-scheme:dark){.link{color:#e0f1ff}}
+.link{font-weight:600;word-break:break-all}
+.lk{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+.pro{background:var(--soft);border-radius:10px;padding:10px 12px;margin-top:12px;display:grid;gap:1px}
+.pro span{font-size:13px}
+.pro small{color:var(--muted);font-size:12px}
 .btns{display:flex;gap:6px;margin:14px 0}
 .btn{flex:1;background:var(--soft);border-radius:8px;padding:8px 6px;font-weight:600;text-align:center;font-size:14px}
 .btn.primary{background:var(--accent);color:#fff}
 .btn.on{background:var(--fg);color:var(--bg)}
 .btn.danger{color:var(--danger)}
+.btn.sq{flex:none;width:38px;padding:0;display:grid;place-items:center}
+.btn.sq svg{width:18px;height:18px}
 .hl{display:flex;gap:14px;overflow-x:auto;padding:4px 0 14px;scrollbar-width:none}
 .hl::-webkit-scrollbar{display:none}
 .hl button{flex:none;width:68px;text-align:center;font-size:12px}
 .hl .c{width:64px;height:64px;border-radius:50%;border:1px solid var(--line);margin:0 auto 4px;background:var(--soft) center/cover;display:grid;place-items:center;font-size:28px;color:var(--muted);padding:3px;background-clip:content-box}
 .hl span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tabs{display:flex;border-top:1px solid var(--line)}
-.tabs div{flex:1;display:grid;place-items:center;padding:10px 0;color:var(--muted)}
+.tabs div{flex:1;display:grid;place-items:center;padding:10px 0;color:var(--muted);cursor:pointer}
 .tabs div.a{color:var(--fg);box-shadow:inset 0 -1px 0 var(--fg)}
 .tabs svg{width:24px;height:24px}
 
 /* grid */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
 .cell{position:relative;aspect-ratio:3/4;background:var(--soft) center/cover;overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.grid.reels .cell{aspect-ratio:9/16}
 .cell img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .cell .car{position:absolute;top:6px;right:6px;width:20px;height:20px;filter:drop-shadow(0 0 2px rgba(0,0,0,.6))}
-.cell .num{position:absolute;left:6px;bottom:6px;background:rgba(0,0,0,.6);color:#fff;border-radius:10px;padding:1px 7px;font-size:12px}
+.cell .pin{position:absolute;top:6px;left:6px;width:18px;height:18px;filter:drop-shadow(0 0 2px rgba(0,0,0,.6))}
+.cell .views{position:absolute;left:6px;bottom:6px;color:#fff;font-size:13px;font-weight:600;text-shadow:0 0 3px rgba(0,0,0,.7)}
 .cell.ghost{position:fixed;z-index:50;pointer-events:none;opacity:.9;box-shadow:0 8px 24px rgba(0,0,0,.4);transform:scale(1.06)}
 .cell.ph{opacity:.25}
 .reorder .cell{touch-action:none}
@@ -77,6 +97,10 @@ input,textarea{font:inherit;color:var(--fg)}
 .nav button{flex:1;padding:10px 0 8px;display:grid;justify-items:center;gap:2px;font-size:11px;color:var(--muted)}
 .nav button.a{color:var(--fg);font-weight:600}
 .nav svg{width:26px;height:26px}
+body.clean .editor,body.clean .nav{display:none!important}
+body.clean{padding-bottom:var(--safe-b)}
+#exitClean{display:none;position:fixed;right:12px;bottom:calc(12px + var(--safe-b));width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;z-index:9;place-items:center;font-size:16px}
+body.clean #exitClean{display:grid}
 
 /* transfer view */
 .pad{padding:16px}
@@ -107,54 +131,33 @@ label.f{display:block;margin:10px 0}
 label.f small{display:block;color:var(--muted);margin-bottom:3px}
 label.f input,label.f textarea{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:9px 10px;font-size:16px}
 label.f textarea{min-height:92px;resize:vertical}
+label.f.chk{display:flex;align-items:center;gap:10px}
+label.f.chk input{width:auto;margin:0;transform:scale(1.25)}
 .cnt{float:right}
 .pic{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
 .pic .avatar{width:64px;height:64px}
+.sheet h3{font-size:16px;margin:16px 0 6px}
 .slides{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;margin-bottom:6px;scrollbar-width:none}
 .slides::-webkit-scrollbar{display:none}
 .slide{flex:none;width:72%;scroll-snap-align:center;position:relative;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:var(--soft)}
 .slides.one .slide{width:100%}
 .slide img{width:100%;height:100%;object-fit:cover}
 .slide .x{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:18px;display:grid;place-items:center}
+.slide .play{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.65);color:#fff;border-radius:10px;padding:1px 8px;font-size:12px}
 .pos{display:flex;align-items:center;gap:8px;margin:8px 0}
 .pos span{flex:1;text-align:center;color:var(--muted)}
 .pos .btn{flex:none;width:96px}
-
-#toast{position:fixed;left:50%;bottom:calc(84px + var(--safe-b));transform:translateX(-50%);background:#262626;color:#fff;padding:9px 16px;border-radius:20px;z-index:40;font-size:14px;max-width:90%;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s}
-#toast.s{opacity:1}
-
-/* instagram-like details */
-:root{--tag:#00376b}
-@media (prefers-color-scheme:dark){:root{--tag:#e0f1ff}}
-.tag{color:var(--tag)}
-.link{color:var(--tag)}
-.top .un{display:flex;align-items:center;gap:4px;flex:1;min-width:0}
-.top .un>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.top .chev{width:14px;height:14px;flex:none}
-.top .ic{width:26px;height:26px;display:grid;place-items:center;margin-left:14px;flex:none}
-.top .ic svg{width:26px;height:26px}
-.badge{width:14px;height:14px;vertical-align:-1px;margin-left:4px;flex:none}
-.editor{display:flex;align-items:center;gap:6px;padding:6px 16px;background:var(--soft);font-size:12px;color:var(--muted);overflow-x:auto;scrollbar-width:none}
-.editor::-webkit-scrollbar{display:none}
-.chip{flex:none;border:1px dashed var(--muted);border-radius:16px;padding:4px 10px;font-size:13px;color:var(--fg);white-space:nowrap}
-.chip.on{background:var(--fg);color:var(--bg);border-style:solid}
-.avwrap{padding:3px;border-radius:50%;flex:none}
-.avwrap .avatar{width:80px;height:80px}
-.avwrap.ring,.avs.ring{background:linear-gradient(45deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5)}
-.avwrap.ring .avatar,.avs.ring .avatar{border:3px solid var(--bg)}
-.lk{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
-.pro{background:var(--soft);border-radius:10px;padding:10px 12px;margin-top:12px;display:grid;gap:1px}
-.pro span{font-size:13px}
-.pro small{color:var(--muted);font-size:12px}
-.btn.sq{flex:none;width:38px;padding:0;display:grid;place-items:center}
-.btn.sq svg{width:18px;height:18px}
-.cell .pin{position:absolute;top:6px;left:6px;width:18px;height:18px;filter:drop-shadow(0 0 2px rgba(0,0,0,.6))}
-label.f.chk{display:flex;align-items:center;gap:10px}
-label.f.chk input{width:auto;margin:0;transform:scale(1.25)}
-body.clean .editor,body.clean .nav{display:none!important}
-body.clean{padding-bottom:var(--safe-b)}
-#exitClean{display:none;position:fixed;right:12px;bottom:calc(12px + var(--safe-b));width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;z-index:9;place-items:center;font-size:16px}
-body.clean #exitClean{display:grid}
+.srow{display:flex;align-items:center;gap:8px;margin:6px 0}
+.srow .th{width:42px;aspect-ratio:9/16;border-radius:6px;background:var(--soft) center/cover;flex:none;position:relative}
+.srow .th i{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-style:normal;font-size:14px;text-shadow:0 0 3px #000}
+.srow input{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 10px;font-size:16px}
+.srow .x{width:32px;height:32px;border-radius:50%;background:var(--soft);display:grid;place-items:center;flex:none}
+.acc{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.acc .avatar{width:48px;height:48px}
+.acc .who2{flex:1;min-width:0;line-height:1.25}
+.acc .who2 small{display:block;color:var(--muted)}
+.acc .ok{color:var(--accent);font-weight:700}
+.acc .x{width:32px;height:32px;display:grid;place-items:center;color:var(--danger)}
 
 /* feed viewer */
 #viewer{position:fixed;inset:0;z-index:15;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
@@ -179,43 +182,90 @@ body.clean #exitClean{display:grid}
 .fm{position:relative}
 .fslides{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
 .fslides::-webkit-scrollbar{display:none}
-.fslide{flex:none;width:100%;scroll-snap-align:center;aspect-ratio:4/5;background:var(--soft)}
-.fslide img{width:100%;height:100%;object-fit:cover;display:block}
+.fslide{flex:none;width:100%;scroll-snap-align:center;aspect-ratio:4/5;background:var(--soft);position:relative}
+.fslide img,.fslide video{width:100%;height:100%;object-fit:cover;display:block}
+.fslide .mute{position:absolute;right:10px;bottom:10px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;display:grid;place-items:center;font-size:13px;pointer-events:none}
 .pager{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.65);color:#fff;border-radius:12px;padding:2px 9px;font-size:12px}
 .acts{display:flex;align-items:center;gap:14px;padding:10px 12px 6px;position:relative}
 .acts .ic{width:26px;height:26px}
 .acts .ic svg{width:26px;height:26px}
 .acts .ic:last-child{margin-left:auto}
-.acts .ic.lk-on svg{fill:#ed4956;stroke:#ed4956}
-.acts .ic.sv-on svg{fill:currentColor}
+.ic.lk-on svg{fill:#ed4956;stroke:#ed4956}
+.ic.sv-on svg{fill:currentColor}
 .dots{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;gap:4px}
 .dots i{width:6px;height:6px;border-radius:50%;background:var(--muted);opacity:.5}
 .dots i.a{background:var(--accent);opacity:1}
 .likes,.fc,.cm,.dt{padding:0 12px}
-.likes{font-size:14px;margin-bottom:4px}
+.likes{font-size:14px;margin-bottom:4px;display:flex;align-items:center}
+.stack{display:inline-flex;margin-right:6px}
+.stack i{width:18px;height:18px;border-radius:50%;border:2px solid var(--bg);margin-left:-6px;color:#fff;font-size:9px;font-style:normal;display:grid;place-items:center;font-weight:700}
+.stack i:first-child{margin-left:0}
 .fc{font-size:14px;white-space:pre-wrap;word-break:break-word}
 .fc .more{color:var(--muted);font-size:14px}
 .cm{color:var(--muted);font-size:14px;margin-top:4px}
 .dt{color:var(--muted);font-size:11px;margin-top:4px}
+
+/* reels viewer */
+#rviewer{position:fixed;inset:0;z-index:16;background:#000;color:#fff}
+#rlist{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain}
+.rl{height:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;overflow:hidden;background:#000}
+.rmedia{position:absolute;top:0;bottom:0;left:50%;width:100%;max-width:560px;transform:translateX(-50%)}
+.rmedia video,.rmedia img{width:100%;height:100%;object-fit:cover;display:block}
+.rl::after{content:"";position:absolute;left:0;right:0;bottom:0;height:40%;background:linear-gradient(transparent,rgba(0,0,0,.6));pointer-events:none}
+.rtop{position:absolute;top:0;left:0;right:0;z-index:3;padding:calc(10px + var(--safe-t)) 12px 14px;display:flex;align-items:center;gap:12px;background:linear-gradient(rgba(0,0,0,.45),transparent);font-weight:700;font-size:18px}
+.rtop .ic{width:28px;height:28px}
+.rtop .ic svg{width:26px;height:26px}
+.rtop .grow{flex:1}
+.rside{position:absolute;right:10px;bottom:calc(28px + var(--safe-b));display:grid;gap:18px;justify-items:center;z-index:2}
+.rside button{display:grid;justify-items:center;gap:2px;font-size:12px;color:#fff}
+.rside svg{width:28px;height:28px;filter:drop-shadow(0 0 3px rgba(0,0,0,.5))}
+.rbot{position:absolute;left:12px;right:72px;bottom:calc(24px + var(--safe-b));z-index:2;text-shadow:0 0 4px rgba(0,0,0,.6);font-size:14px}
+.rwho{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:6px}
+.rwho .avatar{width:32px;height:32px;border:1px solid #fff}
+.rcap{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap}
+.rcap .tag{color:#fff;font-weight:600}
+.raudio{margin-top:6px;font-size:12px;opacity:.9}
+
+/* stories viewer */
+#sviewer{position:fixed;inset:0;z-index:17;background:#000;color:#fff;display:flex;justify-content:center}
+.sv{position:relative;width:100%;max-width:480px;height:100%;background:#111;overflow:hidden}
+.smedia{position:absolute;inset:0}
+.smedia img,.smedia video{width:100%;height:100%;object-fit:cover;display:block}
+.sbars{position:absolute;top:calc(8px + var(--safe-t));left:8px;right:8px;display:flex;gap:4px;z-index:3}
+.sbars i{flex:1;height:2.5px;background:rgba(255,255,255,.35);border-radius:2px;overflow:hidden}
+.sbars b{display:block;height:100%;width:0;background:#fff}
+.shead{position:absolute;top:calc(18px + var(--safe-t));left:10px;right:10px;display:flex;align-items:center;gap:8px;z-index:4;text-shadow:0 0 4px rgba(0,0,0,.7)}
+.shead .avatar{width:32px;height:32px;border:0}
+.shead small{opacity:.8}
+.shead .grow{flex:1}
+.shead .ic{width:30px;height:30px;font-size:18px}
+.shead .ic svg{width:22px;height:22px}
+.szone{position:absolute;top:80px;bottom:0;z-index:2}
+.szone.l{left:0;width:30%}
+.szone.r{right:0;width:70%}
+.stext{position:absolute;left:20px;right:20px;top:50%;transform:translateY(-50%);text-align:center;font-size:26px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,.6);z-index:2;white-space:pre-wrap;pointer-events:none}
+
+#toast{position:fixed;left:50%;bottom:calc(84px + var(--safe-b));transform:translateX(-50%);background:#262626;color:#fff;padding:9px 16px;border-radius:20px;z-index:40;font-size:14px;max-width:90%;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.s{opacity:1}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div id="v-feed">
     <div class="top">
-      <span class="un"><span id="topname"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
-      <button class="ic" data-act="addPhotos" aria-label="Додати"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M12 8v8M8 12h8"/></svg></button>
+      <span class="un" data-act="accounts"><span id="topname"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+      <button class="ic" data-act="addMedia" aria-label="Додати"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M12 8v8M8 12h8"/></svg></button>
       <button class="ic" data-act="fake" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
     </div>
     <div class="editor" id="editor">
       <span>Редактор:</span>
-      <button class="chip" data-act="addPhotos">＋ Фото</button>
+      <button class="chip" data-act="addMedia" id="btnAdd">＋ Фото/відео</button>
       <button class="chip" data-act="toggleReorder" id="btnReorder">↕ Порядок</button>
       <button class="chip" data-act="toggleClean">👁 Чистий вигляд</button>
     </div>
     <div class="prof">
       <div class="row1">
-        <div class="avwrap" id="avwrap"><div class="avatar" id="avatar"></div></div>
+        <div class="avwrap" id="avwrap" data-act="avatarTap"><div class="avatar" id="avatar"></div></div>
         <div class="stats">
           <div><b id="stPosts">0</b><span>дописи</span></div>
           <div><b id="stFol"></b><span>підписники</span></div>
@@ -234,10 +284,10 @@ body.clean #exitClean{display:grid}
       </div>
       <div class="hl" id="hl"></div>
     </div>
-    <div class="tabs">
-      <div class="a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg></div>
-      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 8h18M9 3l3 5M15 3l3 5"/><path d="m10 12 5 3-5 3z" fill="currentColor"/></svg></div>
-      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z" opacity="0"/><path d="M5 3h14a1 1 0 0 1 1 1v13l-3 3H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><circle cx="12" cy="10" r="2.5"/><path d="M7.5 17a5 5 0 0 1 9 0"/></svg></div>
+    <div class="tabs" id="ptabs">
+      <div class="a" data-act="ptab" data-p="grid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg></div>
+      <div data-act="ptab" data-p="reels"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 8h18M9 3l3 5M15 3l3 5"/><path d="m10 12 5 3-5 3z" fill="currentColor"/></svg></div>
+      <div data-act="ptab" data-p="tagged"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h14a1 1 0 0 1 1 1v13l-3 3H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><circle cx="12" cy="10" r="2.5"/><path d="M7.5 17a5 5 0 0 1 9 0"/></svg></div>
     </div>
     <div id="grid"></div>
   </div>
@@ -254,10 +304,15 @@ body.clean #exitClean{display:grid}
   <div class="vtop"><button class="ic" data-act="closeViewer" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg></button><div><small id="vuser"></small><b>Дописи</b></div></div>
   <div id="vlist"></div>
 </div></div>
+<div id="rviewer" class="hide">
+  <div class="rtop"><button class="ic" data-act="closeReels" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg></button><span class="grow">Reels</span><button class="ic" data-act="rmute" id="rmuteBtn" aria-label="Звук">🔇</button></div>
+  <div id="rlist"></div>
+</div>
+<div id="sviewer" class="hide"></div>
 <button id="exitClean" data-act="toggleClean" aria-label="Вийти з чистого вигляду">✕</button>
 <div id="sheet" class="hide"></div>
 <div id="toast"></div>
-<input type="file" id="fileIn" accept="image/*" multiple hidden>
+<input type="file" id="fileMedia" accept="image/*,video/*" multiple hidden>
 <input type="file" id="fileOne" accept="image/*" hidden>
 <input type="file" id="fileBackup" accept="application/json,.json" hidden>
 
@@ -270,7 +325,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 let toastT;
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('s'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('s'), 2200); }
 
-/* ---------- storage (IndexedDB: стан + фото) ---------- */
+/* ---------- storage (IndexedDB: стани акаунтів + фото/відео) ---------- */
 let dbp;
 function db() {
   return dbp || (dbp = new Promise((res, rej) => {
@@ -291,6 +346,7 @@ async function idb(store, mode, fn) {
 }
 const kvGet = k => idb('kv', 'readonly', s => s.get(k));
 const kvSet = (k, v) => idb('kv', 'readwrite', s => s.put(v, k));
+const kvDel = k => idb('kv', 'readwrite', s => s.delete(k));
 const imgPut = (id, b) => idb('img', 'readwrite', s => s.put(b, id));
 const imgGet = id => idb('img', 'readonly', s => s.get(id));
 const imgDel = id => idb('img', 'readwrite', s => s.delete(id));
@@ -299,19 +355,36 @@ const imgKeys = () => idb('img', 'readonly', s => s.getAllKeys());
 /* ---------- state ---------- */
 const blank = () => ({
   profile: { username: 'your_username', name: 'Твоє ім’я', category: '', bio: 'Напиши тут біо ✨\nДруга строчка', link: '', avatar: null, followers: '0', following: '0', verified: false, story: false, pro: false, views: '' },
-  highlights: [],
-  posts: []   // {id, imgs:[imgId], caption, done}
+  highlights: [],   // {id, title, cover, stories:[story]}
+  posts: [],        // {id, imgs:[imgId], vids:{imgId:vidId}, caption, done, pinned, reel, views, likes, likedBy, comments, place, date}
+  tagged: [],       // як posts, плюс owner
+  my: { stories: [] }   // мої сторіз; story = {id, img, vid, text, t}
 });
+let ACC = { active: null, list: [] };
 let S = blank();
-const urls = {};            // imgId -> objectURL
-let reorder = false;
-let saveT;
-function normalize() { S.posts = [...S.posts.filter(p => p.pinned), ...S.posts.filter(p => !p.pinned)]; }   // закріплені — завжди зверху
+const urls = {};                 // id -> objectURL
+let reorder = false, ptab = 'grid', saveT;
+
+const stateKey = id => 'state:' + id;
+async function loadState(id) { return Object.assign(blank(), (await kvGet(stateKey(id))) || {}); }
+function normalize() { S.posts = [...S.posts.filter(p => p.pinned), ...S.posts.filter(p => !p.pinned)]; }   // закріплені — зверху
+function save() {
+  normalize(); clearTimeout(saveT);
+  const id = ACC.active, st = S;
+  saveT = setTimeout(() => kvSet(stateKey(id), st).catch(() => toast('Не вдалося зберегти 😕')), 250);
+}
+async function flushSave() { clearTimeout(saveT); normalize(); if (ACC.active) await kvSet(stateKey(ACC.active), S); }
+
 function today() { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 function fmtDate(iso) {
   const d = new Date((iso || '') + 'T12:00:00'); if (!iso || isNaN(d)) return '';
   const o = { day: 'numeric', month: 'long' }; if (d.getFullYear() !== new Date().getFullYear()) o.year = 'numeric';
   return d.toLocaleDateString('uk-UA', o).toUpperCase();
+}
+function ago(t) {
+  if (!t) return '';
+  const m = Math.max(1, Math.round((Date.now() - t) / 60000)); if (m < 60) return m + ' хв';
+  const h = Math.round(m / 60); return h < 24 ? h + ' год' : Math.round(h / 24) + ' дн';
 }
 const RE_TAG = /(^|[^\p{L}\p{N}_])([#@][\p{L}\p{N}_.]*[\p{L}\p{N}_])/gu;
 function rich(text) {   // екранування + хештеги/згадки синім
@@ -319,7 +392,18 @@ function rich(text) {   // екранування + хештеги/згадки 
   for (const m of text.matchAll(RE_TAG)) { const st = m.index + m[1].length; out += esc(text.slice(last, st)) + `<span class="tag">${esc(m[2])}</span>`; last = st + m[2].length; }
   return out + esc(text.slice(last));
 }
-function save() { normalize(); clearTimeout(saveT); saveT = setTimeout(() => kvSet('state', S).catch(() => toast('Не вдалося зберегти 😕')), 250); }
+const hue = s => [...String(s || '?')].reduce((a, c) => a + c.charCodeAt(0), 0) % 360;
+
+/* які id фото/відео використовує стан */
+function idsOf(st) {
+  const s = new Set(), add = i => i && s.add(i);
+  add(st.profile.avatar);
+  const stories = set => (set.stories || []).forEach(x => { add(x.img); add(x.vid); });
+  (st.highlights || []).forEach(h => { add(h.cover); stories(h); });
+  stories(st.my || {});
+  [...(st.posts || []), ...(st.tagged || [])].forEach(p => { (p.imgs || []).forEach(add); Object.values(p.vids || {}).forEach(add); });
+  return s;
+}
 
 async function addImg(blob) {
   const id = uid();
@@ -332,15 +416,13 @@ async function dropImg(id) {
   if (urls[id]) { URL.revokeObjectURL(urls[id]); delete urls[id]; }
   await imgDel(id).catch(() => {});
 }
-function usedImgIds() {
-  const s = new Set();
-  if (S.profile.avatar) s.add(S.profile.avatar);
-  S.highlights.forEach(h => h.cover && s.add(h.cover));
-  S.posts.forEach(p => p.imgs.forEach(i => s.add(i)));
-  return s;
-}
+async function dropSlide(p, im) { await dropImg(im); if (p.vids && p.vids[im]) { await dropImg(p.vids[im]); delete p.vids[im]; } }
+async function dropPostMedia(p) { for (const im of [...p.imgs]) await dropSlide(p, im); }
+async function dropSet(set) { for (const s of set.stories || []) { await dropImg(s.img); await dropImg(s.vid); } }
+function resetUrls() { for (const id of Object.keys(urls)) { URL.revokeObjectURL(urls[id]); delete urls[id]; } }
+async function loadUrls(st) { for (const id of idsOf(st)) { const b = await imgGet(id); if (b) urls[id] = URL.createObjectURL(b); } }
 
-/* ---------- image processing ---------- */
+/* ---------- media processing ---------- */
 function fileToBlob(file, max, square = false, q = .88) {
   return new Promise((res, rej) => {
     const u = URL.createObjectURL(file), im = new Image();
@@ -358,27 +440,76 @@ function fileToBlob(file, max, square = false, q = .88) {
     im.src = u;
   });
 }
-function pickFiles(input) {
+function videoPoster(file) {   // кадр із відео для обкладинки
   return new Promise(res => {
-    input.value = '';
+    const u = URL.createObjectURL(file), v = document.createElement('video');
+    let done = false, tm;
+    const finish = b => { if (done) return; done = true; clearTimeout(tm); v.removeAttribute('src'); v.load(); URL.revokeObjectURL(u); res(b); };
+    const fallback = () => { const c = document.createElement('canvas'); c.width = 540; c.height = 960; const g = c.getContext('2d'); g.fillStyle = '#222'; g.fillRect(0, 0, 540, 960); c.toBlob(b => finish(b), 'image/jpeg', .8); };
+    tm = setTimeout(fallback, 6000);
+    v.muted = true; v.playsInline = true; v.preload = 'auto'; v.setAttribute('playsinline', '');
+    v.onloadedmetadata = () => { try { v.currentTime = Math.min(0.3, (v.duration || 1) / 2); } catch { fallback(); } };
+    v.onseeked = () => {
+      const w = v.videoWidth, h = v.videoHeight; if (!w || !h) return fallback();
+      const k = Math.min(1, 1080 / Math.max(w, h)), c = document.createElement('canvas');
+      c.width = Math.round(w * k); c.height = Math.round(h * k);
+      c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+      c.toBlob(b => b ? finish(b) : fallback(), 'image/jpeg', .85);
+    };
+    v.onerror = fallback;
+    v.src = u;
+  });
+}
+const isVideo = f => (f.type || '').startsWith('video/') || /\.(mov|mp4|m4v|webm)$/i.test(f.name || '');
+async function fileToMedia(file, max = 1440) {   // -> {img, vid|null}
+  if (isVideo(file)) {
+    if (file.size > 500e6) throw new Error('big');
+    const img = await addImg(await videoPoster(file));
+    const vid = await addImg(file);
+    return { img, vid };
+  }
+  return { img: await addImg(await fileToBlob(file, max)), vid: null };
+}
+function pickFiles(input, accept) {
+  return new Promise(res => {
+    input.value = ''; if (accept) input.accept = accept;
     input.onchange = () => res([...input.files]);
     input.click();
   });
 }
+const pickMedia = accept => pickFiles($('#fileMedia'), accept);
 
-/* ---------- render: profile ---------- */
+/* ---------- icons ---------- */
 const ICON_CAROUSEL = '<svg class="car" viewBox="0 0 24 24" fill="#fff"><path d="M7 3h12a2 2 0 0 1 2 2v12h-2V5H7z"/><rect x="3" y="7" width="14" height="14" rx="2"/></svg>';
+const ICON_REEL = '<svg class="car" viewBox="0 0 24 24" fill="#fff"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm1 5-1.800-3.500h-.200V8zm3 0-2-4h3l2 4zm5 0-2-4h3l2 4zm5 0-2-4h.5a1.500 1.500 0 0 1 1.500 1.500V8zM10 12v6l5-3z" fill-rule="evenodd"/></svg>';
+const ICON_PIN = '<svg class="pin" viewBox="0 0 24 24" fill="#fff"><path d="M15 3l6 6-2.200 1-3 3 .6 4.200-1.600 1.600-3.800-3.800L6.500 20.500 5.500 19.500l4.500-4.200-3.800-3.800L7.800 9.900 12 10.500l3-3z"/></svg>';
 const BADGE = '<svg class="badge" viewBox="0 0 24 24"><path fill="#0095f6" d="M12 1l2.4 1.9 3-.4 1.1 2.8 2.8 1.1-.4 3L22.8 12l-1.9 2.4.4 3-2.8 1.1-1.1 2.8-3-.4L12 23l-2.4-1.9-3 .4-1.1-2.8-2.8-1.1.4-3L1.2 12l1.9-2.4-.4-3 2.8-1.1 1.1-2.8 3 .4z"/><path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const ICON_LINK = '<svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>';
-const ICON_PIN = '<svg class="pin" viewBox="0 0 24 24" fill="#fff"><path d="M15 3l6 6-2.200 1-3 3 .6 4.200-1.600 1.600-3.800-3.800L6.500 20.500 5.500 19.500l4.500-4.200-3.800-3.800L7.800 9.900 12 10.500l3-3z"/></svg>';
+const IC = {
+  heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20.5s-8-4.7-8-10.3A4.5 4.5 0 0 1 12 7.6a4.5 4.5 0 0 1 8 2.6c0 5.6-8 10.3-8 10.3z"/></svg>',
+  comment: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-3.7-7l3.2-.5-.8 3.3A8.4 8.4 0 0 1 20.5 12z"/></svg>',
+  share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></svg>',
+  save: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.500L6 21z"/></svg>',
+  more: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>'
+};
 const avStyle = id => id && urls[id] ? `background-image:url(${urls[id]})` : '';
+const vidOf = x => (x.imgs || []).find(i => x.vids && x.vids[i] && urls[x.vids[i]]);
+
+/* ---------- overlays / scroll lock ---------- */
+const viewerOpen = () => !$('#viewer').classList.contains('hide');
+const reelsOpen = () => !$('#rviewer').classList.contains('hide');
+const storiesOpen = () => !$('#sviewer').classList.contains('hide');
+const sheetOpen = () => !$('#sheet').classList.contains('hide');
+function syncLock() { document.body.style.overflow = (viewerOpen() || reelsOpen() || storiesOpen() || sheetOpen()) ? 'hidden' : ''; }
+
+/* ---------- render: profile / grid ---------- */
 function renderProfile() {
   const p = S.profile;
   $('#topname').innerHTML = esc(p.username || 'username') + (p.verified ? BADGE : '');
   const av = $('#avatar');
   av.style.backgroundImage = p.avatar && urls[p.avatar] ? `url(${urls[p.avatar]})` : '';
   av.textContent = p.avatar ? '' : '👤';
-  $('#avwrap').classList.toggle('ring', !!p.story);
+  $('#avwrap').classList.toggle('ring', !!p.story || S.my.stories.length > 0);
   $('#stPosts').textContent = S.posts.length;
   $('#stFol').textContent = p.followers || '0';
   $('#stFg').textContent = p.following || '0';
@@ -389,85 +520,206 @@ function renderProfile() {
   $('#pro').classList.toggle('hide', !p.pro);
   $('#proViews').textContent = (p.views || '0') + ' переглядів за останні 30 днів';
   $('#hl').innerHTML =
-    S.highlights.map(h => `<button data-act="editHl" data-id="${h.id}"><div class="c" style="${h.cover && urls[h.cover] ? `background-image:url(${urls[h.cover]})` : ''}">${h.cover ? '' : '★'}</div><span>${esc(h.title || ' ')}</span></button>`).join('') +
-    `<button data-act="editHl" data-id=""><div class="c">＋</div><span>Створити</span></button>`;
+    S.highlights.map(h => { const cov = h.cover || ((h.stories || [])[0] || {}).img; return `<button data-act="hlTap" data-id="${h.id}"><div class="c" style="${cov && urls[cov] ? `background-image:url(${urls[cov]})` : ''}">${cov ? '' : '★'}</div><span>${esc(h.title || ' ')}</span></button>`; }).join('') +
+    `<button data-act="hlTap" data-id=""><div class="c">＋</div><span>Створити</span></button>`;
 }
+const EMPTY = {
+  grid: ['Поки порожньо', 'Натисни «＋ Фото/відео» і вибери знімки з галереї — вони з’являться в сітці так, як виглядатимуть в Instagram.'],
+  reels: ['Немає Reels', 'Натисни «＋ Reels» і вибери відео з галереї.'],
+  tagged: ['Немає тегнутих', 'Тут дописи, де інші люди відмітили цей акаунт. Натисни «＋ Тегнуте» і додай фото.']
+};
 function renderGrid() {
   const g = $('#grid');
-  g.className = reorder ? 'reorder' : '';
+  document.querySelectorAll('#ptabs [data-p]').forEach(d => d.classList.toggle('a', d.dataset.p === ptab));
+  $('#btnAdd').textContent = { grid: '＋ Фото/відео', reels: '＋ Reels', tagged: '＋ Тегнуте' }[ptab];
+  g.className = reorder && ptab === 'grid' ? 'reorder' : '';
   $('#btnReorder').classList.toggle('on', reorder);
   $('#btnReorder').textContent = reorder ? '✓ Готово' : '↕ Порядок';
-  if (!S.posts.length) {
-    g.innerHTML = '<div class="empty"><b>Поки порожньо</b>Натисни «＋ Фото» і вибери знімки з галереї — вони з’являться в сітці так, як виглядатимуть в Instagram.</div>';
-    return;
-  }
-  g.innerHTML = '<div class="grid">' + S.posts.map(p =>
-    `<div class="cell" data-id="${p.id}"><img src="${urls[p.imgs[0]] || ''}" alt="" draggable="false">${p.pinned ? ICON_PIN : ''}${p.imgs.length > 1 ? ICON_CAROUSEL : ''}</div>`).join('') + '</div>';
+  const list = ptab === 'grid' ? S.posts : ptab === 'reels' ? S.posts.filter(p => p.reel) : S.tagged;
+  if (!list.length) { g.innerHTML = `<div class="empty"><b>${EMPTY[ptab][0]}</b>${EMPTY[ptab][1]}</div>`; return; }
+  g.innerHTML = `<div class="grid ${ptab === 'reels' ? 'reels' : ''}">` + list.map(p => {
+    let mark = '';
+    if (ptab === 'reels') mark = `<span class="views">▶ ${esc(p.views || '0')}</span>`;
+    else mark = (ptab === 'grid' && p.pinned ? ICON_PIN : '') + (p.reel ? ICON_REEL : p.imgs.length > 1 ? ICON_CAROUSEL : '');
+    return `<div class="cell" data-id="${p.id}"><img src="${urls[p.imgs[0]] || ''}" alt="" draggable="false">${mark}</div>`;
+  }).join('') + '</div>';
 }
-const IC = {
-  heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20.5s-8-4.7-8-10.3A4.5 4.5 0 0 1 12 7.6a4.5 4.5 0 0 1 8 2.6c0 5.6-8 10.3-8 10.3z"/></svg>',
-  comment: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M20.5 12a8.5 8.5 0 1 1-3.7-7l3.2-.5-.8 3.3A8.4 8.4 0 0 1 20.5 12z"/></svg>',
-  share: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/></svg>',
-  save: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.500L6 21z"/></svg>',
-  more: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>'
-};
-const viewerOpen = () => !$('#viewer').classList.contains('hide');
+function renderAll() {
+  renderProfile(); renderGrid();
+  if (viewerOpen()) renderViewer();
+  if (reelsOpen()) renderReels();
+  if (!$('#v-move').classList.contains('hide')) renderMove();
+}
+
+/* ---------- відео: автоплей у зоні видимості ---------- */
+function watchVideos(root) {
+  if (root._io) root._io.disconnect();
+  root._io = new IntersectionObserver(es => es.forEach(e => {
+    const v = e.target;
+    if (e.isIntersecting && e.intersectionRatio >= .6) v.play().catch(() => {}); else v.pause();
+  }), { root, threshold: [0, .6, 1] });
+  root.querySelectorAll('video').forEach(v => root._io.observe(v));
+}
+
+/* ---------- viewer: допис як у стрічці ---------- */
+let vlist = 'posts';
+const curList = () => vlist === 'tagged' ? S.tagged : S.posts;
+function slideHtml(x, im) {
+  if (x.vids && x.vids[im] && urls[x.vids[im]])
+    return `<div class="fslide" data-act="toggleMute"><video src="${urls[x.vids[im]]}" poster="${urls[im] || ''}" playsinline muted loop preload="metadata"></video><span class="mute">🔇</span></div>`;
+  return `<div class="fslide"><img src="${urls[im] || ''}" alt=""></div>`;
+}
+function likesHtml(x) {
+  const n = x.likes;
+  if (x.likedBy) {
+    const h = hue(x.likedBy), c = (k) => `hsl(${(h + k * 70) % 360} 55% 52%)`;
+    return `<div class="likes"><span class="stack"><i style="background:${c(0)}">${esc([...x.likedBy][0].toUpperCase())}</i><i style="background:${c(1)}"></i><i style="background:${c(2)}"></i></span><span>Вподобали <b>${esc(x.likedBy)}</b>${n ? ` та ще <b>${esc(n)}</b>` : ''}</span></div>`;
+  }
+  return n ? `<div class="likes">Вподобання: <b>${esc(n)}</b></div>` : '';
+}
 function renderViewer() {
   const p = S.profile, vw = $('#viewer'), keep = vw.scrollTop;
-  $('#vuser').textContent = p.username;
-  $('#vlist').innerHTML = S.posts.map(x => {
+  $('#vuser').textContent = vlist === 'tagged' ? 'Тегнуті' : p.username;
+  $('#vlist').innerHTML = curList().map(x => {
+    const own = !x.owner, name = own ? p.username : x.owner;
     const cap = x.caption || '';
     const capHtml = cap.length > 110
       ? `<span class="short">${rich(cap.slice(0, 110))}</span><button class="more" data-act="more">… ще</button><span class="full hide">${rich(cap)}</span>`
       : rich(cap);
     const n = x.imgs.length;
     return `<article class="fp" data-id="${x.id}">
-      <div class="fh"><div class="avs ${p.story ? 'ring' : ''}"><div class="avatar" style="${avStyle(p.avatar)}"></div></div>
-        <div class="who"><b>${esc(p.username)}${p.verified ? BADGE : ''}</b>${x.place ? `<small>${esc(x.place)}</small>` : ''}</div>
+      <div class="fh"><div class="avs ${own && p.story ? 'ring' : ''}"><div class="avatar" style="${own ? avStyle(p.avatar) : `background:hsl(${hue(name)} 55% 52%);color:#fff`}">${own ? '' : esc([...name][0].toUpperCase())}</div></div>
+        <div class="who"><b>${esc(name)}${own && p.verified ? BADGE : ''}</b>${x.place ? `<small>${esc(x.place)}</small>` : ''}</div>
         <button class="ic" data-act="editPost" data-id="${x.id}" aria-label="Редагувати">${IC.more}</button></div>
-      <div class="fm"><div class="fslides">${x.imgs.map(im => `<div class="fslide"><img src="${urls[im] || ''}" alt=""></div>`).join('')}</div>${n > 1 ? `<span class="pager">1/${n}</span>` : ''}</div>
+      <div class="fm"><div class="fslides">${x.imgs.map(im => slideHtml(x, im)).join('')}</div>${n > 1 ? `<span class="pager">1/${n}</span>` : ''}</div>
       <div class="acts"><button class="ic" data-act="like">${IC.heart}</button><button class="ic" data-act="fake">${IC.comment}</button><button class="ic" data-act="fake">${IC.share}</button>
         <span class="dots">${n > 1 ? x.imgs.map((_, i) => `<i class="${i ? '' : 'a'}"></i>`).join('') : ''}</span>
         <button class="ic" data-act="saveMark">${IC.save}</button></div>
-      ${x.likes ? `<div class="likes">Вподобання: <b>${esc(x.likes)}</b></div>` : ''}
-      ${cap ? `<div class="fc"><b>${esc(p.username)}</b> ${capHtml}</div>` : ''}
+      ${likesHtml(x)}
+      ${cap ? `<div class="fc"><b>${esc(name)}</b> ${capHtml}</div>` : ''}
       ${x.comments && x.comments !== '0' ? `<div class="cm">Переглянути всі коментарі (${esc(x.comments)})</div>` : ''}
       <div class="dt">${fmtDate(x.date)}</div></article>`;
   }).join('') || '<div class="empty"><b>Немає дописів</b></div>';
   vw.scrollTop = keep;
+  watchVideos(vw);
 }
-function openViewer(id) {
-  $('#viewer').classList.remove('hide');
-  document.body.style.overflow = 'hidden';
+function openViewer(id, which) {
+  vlist = which || 'posts';
+  $('#viewer').classList.remove('hide'); syncLock();
   renderViewer();
   const a = $(`#viewer .fp[data-id="${id}"]`); if (a) a.scrollIntoView({ block: 'start' });
 }
-function closeViewer() { $('#viewer').classList.add('hide'); document.body.style.overflow = ''; }
+function closeViewer() { $('#viewer').classList.add('hide'); $('#vlist').innerHTML = ''; syncLock(); }
 $('#viewer').addEventListener('scroll', e => {
   const t = e.target; if (!t.classList || !t.classList.contains('fslides')) return;
   const i = Math.round(t.scrollLeft / t.clientWidth), art = t.closest('.fp');
   art.querySelectorAll('.dots i').forEach((d, k) => d.classList.toggle('a', k === i));
   const pg = art.querySelector('.pager'); if (pg) pg.textContent = (i + 1) + '/' + t.children.length;
 }, true);
-function renderAll() { renderProfile(); renderGrid(); if (viewerOpen()) renderViewer(); if (!$('#v-move').classList.contains('hide')) renderMove(); }
+
+/* ---------- Reels (повноекранні) ---------- */
+let rMuted = true;
+function renderReels() {
+  const list = S.posts.filter(p => p.reel), p = S.profile, rl = $('#rlist'), keep = rl.scrollTop;
+  rl.innerHTML = list.map(x => {
+    const vi = vidOf(x);
+    return `<section class="rl" data-id="${x.id}">
+      <div class="rmedia" data-act="rtap">${vi ? `<video src="${urls[x.vids[vi]]}" poster="${urls[vi] || ''}" playsinline loop ${rMuted ? 'muted' : ''}></video>` : `<img src="${urls[x.imgs[0]] || ''}" alt="">`}</div>
+      <div class="rside">
+        <button data-act="like">${IC.heart}<span>${esc(x.likes || '')}</span></button>
+        <button data-act="fake">${IC.comment}<span>${esc(x.comments || '')}</span></button>
+        <button data-act="fake">${IC.share}</button>
+        <button data-act="editPost" data-id="${x.id}">${IC.more}</button>
+      </div>
+      <div class="rbot"><div class="rwho"><div class="avatar" style="${avStyle(p.avatar)}"></div><span>${esc(p.username)}${p.verified ? BADGE : ''}</span></div>
+        <div class="rcap">${rich(x.caption)}</div><div class="raudio">♪ ${esc(p.username)} · Оригінальний звук</div></div></section>`;
+  }).join('') || '<div class="empty" style="padding-top:35vh"><b style="color:#fff">Немає Reels</b></div>';
+  rl.scrollTop = keep;
+  watchVideos(rl);
+}
+function openReels(id) {
+  $('#rviewer').classList.remove('hide'); syncLock();
+  renderReels();
+  const a = $(`#rlist .rl[data-id="${id}"]`); if (a) a.scrollIntoView({ block: 'start' });
+}
+function closeReels() { $('#rviewer').classList.add('hide'); $('#rlist').innerHTML = ''; syncLock(); }
+
+/* ---------- сторіз ---------- */
+let SV = null;
+function openStories(set, title, edit) {
+  if (!set.stories || !set.stories.length) return;
+  SV = { set, title, edit, i: 0, elapsed: 0, dur: 5000, last: 0, paused: false, down: 0, v: null, raf: 0 };
+  $('#sviewer').classList.remove('hide'); syncLock();
+  showStory(); SV.raf = requestAnimationFrame(tick);
+}
+function showStory() {
+  const s = SV.set.stories[SV.i], p = S.profile;
+  SV.elapsed = 0; SV.dur = 5000; SV.v = null; SV.last = 0;
+  const hasV = s.vid && urls[s.vid];
+  $('#sviewer').innerHTML = `<div class="sv">
+    <div class="smedia">${hasV ? `<video src="${urls[s.vid]}" poster="${urls[s.img] || ''}" playsinline></video>` : `<img src="${urls[s.img] || ''}" alt="">`}</div>
+    ${s.text ? `<div class="stext">${esc(s.text)}</div>` : ''}
+    <div class="sbars">${SV.set.stories.map((_, k) => `<i><b style="width:${k < SV.i ? 100 : 0}%"></b></i>`).join('')}</div>
+    <div class="shead"><div class="avatar" style="${avStyle(p.avatar)}"></div><b>${esc(p.username)}</b><small>${SV.title ? esc(SV.title) : ago(s.t)}</small><span class="grow"></span>
+      <button class="ic" data-act="editStoriesBtn" aria-label="Редагувати">${IC.more}</button><button class="ic" data-act="closeStories" aria-label="Закрити">✕</button></div>
+    <div class="szone l" data-z="l"></div><div class="szone r" data-z="r"></div></div>`;
+  const v = $('#sviewer video');
+  if (v) {
+    SV.v = v;
+    v.onloadedmetadata = () => { SV.dur = (v.duration || 5) * 1000; };
+    v.onended = nextStory;
+    v.muted = false;
+    v.play().catch(() => { v.muted = true; v.play().catch(() => {}); });
+  }
+}
+function tick(ts) {
+  if (!SV) return;
+  const dt = SV.last ? ts - SV.last : 0; SV.last = ts;
+  if (!SV.paused) {
+    if (SV.v) { if (SV.v.duration > 0 && !SV.v.paused) SV.elapsed = SV.v.currentTime * 1000; } else SV.elapsed += dt;
+    const b = document.querySelectorAll('#sviewer .sbars b')[SV.i];
+    if (b) b.style.width = Math.min(100, SV.elapsed / SV.dur * 100) + '%';
+    if (!SV.v && SV.elapsed >= SV.dur) nextStory();
+  }
+  if (SV) SV.raf = requestAnimationFrame(tick);
+}
+function nextStory() { if (!SV) return; if (SV.i < SV.set.stories.length - 1) { SV.i++; showStory(); } else closeStories(); }
+function prevStory() { if (!SV) return; if (SV.elapsed < 1500 && SV.i > 0) SV.i--; showStory(); }
+function closeStories() {
+  if (SV) cancelAnimationFrame(SV.raf);
+  SV = null; $('#sviewer').classList.add('hide'); $('#sviewer').innerHTML = ''; syncLock();
+}
+(function () {
+  const sv = $('#sviewer');
+  sv.addEventListener('pointerdown', e => { if (!SV || !e.target.dataset.z) return; SV.paused = true; SV.down = performance.now(); if (SV.v) SV.v.pause(); });
+  const rel = e => {
+    if (!SV || !SV.down) return;
+    const z = e.target.dataset && e.target.dataset.z, quick = performance.now() - SV.down < 250;
+    SV.down = 0; SV.paused = false;
+    if (e.type === 'pointerup' && quick && z) { z === 'l' ? prevStory() : nextStory(); return; }
+    if (SV.v) SV.v.play().catch(() => {});
+  };
+  sv.addEventListener('pointerup', rel); sv.addEventListener('pointercancel', rel);
+})();
 
 /* ---------- sheets ---------- */
 function openSheet(title, body, onClose) {
   const s = $('#sheet');
+  if (!s.classList.contains('hide') && s._onClose) { const cb = s._onClose; s._onClose = null; cb(); }
   s.innerHTML = `<div class="sheet"><div class="bar"><b>${esc(title)}</b><button data-act="closeSheet">Готово</button></div>${body}</div>`;
   s.classList.remove('hide');
-  s._onClose = onClose;
-  document.body.style.overflow = 'hidden';
+  s._onClose = onClose; s._post = null; s._set = null; s._hl = null; s._cv = null; s._avRefresh = null; s.oninput = null;
+  syncLock();
 }
 function closeSheet() {
   const s = $('#sheet');
-  s.classList.add('hide');
-  document.body.style.overflow = viewerOpen() ? 'hidden' : '';
+  s.classList.add('hide'); syncLock();
   const cb = s._onClose; s._onClose = null;
   if (cb) cb();
   save(); renderAll();
 }
 
+/* --- профіль --- */
 function editProfile() {
   const p = S.profile;
   const f = (k, label, ml) => `<label class="f"><small>${label}</small>${ml ? `<textarea data-k="${k}">${esc(p[k])}</textarea>` : `<input data-k="${k}" value="${esc(p[k])}">`}</label>`;
@@ -478,8 +730,9 @@ function editProfile() {
     ${f('bio', 'Біо (до 150 символів) <span class="cnt" id="bioCnt"></span>', true)}${f('link', 'Посилання')}
     <label class="f"><small>Підписники (можна «1,2 тис.»)</small><input data-k="followers" value="${esc(p.followers)}"></label>
     <label class="f"><small>Підписки</small><input data-k="following" value="${esc(p.following)}"></label>
-    ${c('verified', 'Синя галочка біля імені')}${c('story', 'Кільце сторіз навколо фото профілю')}${c('pro', 'Блок «Професійна панель»')}
-    <label class="f"><small>Перегляди за 30 днів (для панелі)</small><input data-k="views" value="${esc(p.views)}"></label>`);
+    ${c('verified', 'Синя галочка біля імені')}${c('story', 'Кільце сторіз навколо фото (завжди)')}${c('pro', 'Блок «Професійна панель»')}
+    <label class="f"><small>Перегляди за 30 днів (для панелі)</small><input data-k="views" value="${esc(p.views)}"></label>
+    <button class="btn" data-act="editMy" style="width:100%;margin-top:6px">Мої сторіз (${S.my.stories.length}) — керувати</button>`);
   const sh = $('#sheet');
   const av = () => { const a = $('#shAv'); a.style.backgroundImage = p.avatar && urls[p.avatar] ? `url(${urls[p.avatar]})` : ''; a.textContent = p.avatar ? '' : '👤'; };
   const cnt = () => { const n = [...p.bio].length; const c = $('#bioCnt'); c.textContent = n + '/150'; c.style.color = n > 150 ? 'var(--danger)' : ''; };
@@ -491,9 +744,8 @@ function editProfile() {
   };
   sh._avRefresh = av;
 }
-
 async function pickAvatar() {
-  const [f] = await pickFiles($('#fileOne')); if (!f) return;
+  const [f] = await pickFiles($('#fileOne'), 'image/*'); if (!f) return;
   try {
     const old = S.profile.avatar;
     S.profile.avatar = await addImg(await fileToBlob(f, 400, true));
@@ -502,62 +754,174 @@ async function pickAvatar() {
   } catch { toast('Не вдалося відкрити фото'); }
 }
 
+/* --- сторіз: редагування наборів (актуальне / мої сторіз) --- */
+const storyRowsHtml = set => (set.stories || []).map(s =>
+  `<div class="srow"><div class="th" style="background-image:url(${urls[s.img] || ''})">${s.vid ? '<i>▶</i>' : ''}</div><input data-sid="${s.id}" placeholder="Текст на сторіз (необов’язково)" value="${esc(s.text || '')}"><button class="x" data-act="rmStory" data-sid="${s.id}" aria-label="Видалити">✕</button></div>`).join('')
+  || '<p class="hint">Поки порожньо.</p>';
+function editMyStories() {
+  openSheet('Мої сторіз', `<p class="hint">Тап на фото профілю відкриє ці сторіз, навколо фото з’явиться кільце.</p><div id="stRows">${storyRowsHtml(S.my)}</div>
+    <button class="btn" data-act="addStories" style="width:100%;margin-top:8px">＋ Додати фото/відео</button>`);
+  const sh = $('#sheet'); sh._set = S.my;
+  sh.oninput = e => { const id = e.target.dataset.sid; if (!id) return; const s = S.my.stories.find(x => x.id === id); if (s) { s.text = e.target.value; save(); } };
+}
 function editHl(id) {
   let h = S.highlights.find(x => x.id === id);
   const isNew = !h;
-  if (isNew) h = { id: uid(), title: '', cover: null };
+  if (isNew) h = { id: uid(), title: '', cover: null, stories: [] };
+  h.stories = h.stories || [];
   openSheet(isNew ? 'Нове актуальне' : 'Актуальне', `
     <div class="pic"><div class="avatar" id="shCv"></div><button class="btn" data-act="pickCover">Обкладинка</button></div>
     <label class="f"><small>Назва</small><input id="hlTitle" maxlength="16" value="${esc(h.title)}"></label>
-    ${isNew ? '' : '<button class="btn danger" data-act="delHl" style="width:100%;margin-top:8px">Видалити</button>'}`,
-  () => { if (isNew && (h.title || h.cover) && !S.highlights.includes(h)) S.highlights.push(h); });
+    <h3>Сторіз усередині</h3><div id="stRows">${storyRowsHtml(h)}</div>
+    <button class="btn" data-act="addStories" style="width:100%;margin-top:8px">＋ Додати фото/відео</button>
+    ${isNew ? '' : '<button class="btn danger" data-act="delHl" style="width:100%;margin-top:14px">Видалити актуальне</button>'}`,
+  () => { if (isNew && (h.title || h.cover || h.stories.length) && !S.highlights.includes(h)) S.highlights.push(h); });
   const sh = $('#sheet');
-  const cv = () => { const a = $('#shCv'); a.style.backgroundImage = h.cover && urls[h.cover] ? `url(${urls[h.cover]})` : ''; a.textContent = h.cover ? '' : '★'; };
+  const cv = () => { const a = $('#shCv'), cov = h.cover || (h.stories[0] || {}).img; a.style.backgroundImage = cov && urls[cov] ? `url(${urls[cov]})` : ''; a.textContent = cov ? '' : '★'; };
   cv();
-  sh.oninput = e => { if (e.target.id === 'hlTitle') { h.title = e.target.value; if (!isNew) save(); } };
-  sh._hl = h; sh._cv = cv; sh._isNew = isNew;
+  sh.oninput = e => {
+    if (e.target.id === 'hlTitle') { h.title = e.target.value; if (!isNew) save(); return; }
+    const sid = e.target.dataset.sid; if (!sid) return;
+    const s = h.stories.find(x => x.id === sid); if (s) { s.text = e.target.value; if (!isNew) save(); }
+  };
+  sh._hl = h; sh._cv = cv; sh._set = h;
 }
 async function pickCover() {
   const sh = $('#sheet'), h = sh._hl; if (!h) return;
-  const [f] = await pickFiles($('#fileOne')); if (!f) return;
+  const [f] = await pickFiles($('#fileOne'), 'image/*'); if (!f) return;
   try { const old = h.cover; h.cover = await addImg(await fileToBlob(f, 300, true)); await dropImg(old); sh._cv(); save(); } catch { toast('Не вдалося відкрити фото'); }
 }
 async function delHl() {
-  const sh = $('#sheet'), h = sh._hl; if (!h || !confirm('Видалити це актуальне?')) return;
-  await dropImg(h.cover);
+  const sh = $('#sheet'), h = sh._hl; if (!h || !confirm('Видалити це актуальне разом зі сторіз?')) return;
+  await dropImg(h.cover); await dropSet(h);
   S.highlights = S.highlights.filter(x => x !== h);
   sh._onClose = null; closeSheet();
 }
-
-/* ---------- posts ---------- */
-async function addPhotos() {
-  const files = await pickFiles($('#fileIn')); if (!files.length) return;
-  toast('Додаю фото…');
-  let ok = 0;
+async function addStories() {
+  const sh = $('#sheet'), set = sh._set; if (!set) return;
+  const files = await pickMedia('image/*,video/*'); if (!files.length) return;
+  toast('Додаю…');
+  let bad = 0;
   for (const f of files) {
-    try {
-      const id = await addImg(await fileToBlob(f, 1440));
-      S.posts.unshift({ id: uid(), imgs: [id], caption: '', done: false, pinned: false, likes: '', comments: '', place: '', date: today() });   // новий допис — зверху, як в Instagram
-      ok++;
-    } catch { /* пропускаємо */ }
+    try { const m = await fileToMedia(f, 1440); set.stories.push({ id: uid(), img: m.img, vid: m.vid, text: '', t: Date.now() }); } catch { bad++; }
   }
-  save(); renderAll();
-  toast(ok ? `Додано: ${ok}` : 'Не вдалося відкрити фото');
+  const rows = $('#stRows'); if (rows) rows.innerHTML = storyRowsHtml(set);
+  if (sh._cv) sh._cv();
+  save(); if (bad) toast('Деякі файли не вдалося додати');
+}
+async function rmStory(sid) {
+  const sh = $('#sheet'), set = sh._set; if (!set) return;
+  const s = set.stories.find(x => x.id === sid); if (!s) return;
+  await dropImg(s.img); await dropImg(s.vid);
+  set.stories.splice(set.stories.indexOf(s), 1);
+  $('#stRows').innerHTML = storyRowsHtml(set);
+  if (sh._cv) sh._cv();
+  save();
+}
+function hlTap(id) {
+  const h = S.highlights.find(x => x.id === id);
+  if (h && h.stories && h.stories.length) openStories(h, h.title, () => editHl(h.id)); else editHl(id);
+}
+function avatarTap() {
+  if (S.my.stories.length) openStories(S.my, '', editMyStories); else editMyStories();
 }
 
+/* --- акаунти --- */
+async function openAccounts() {
+  await flushSave();
+  const tmp = [], rows = [];
+  for (const id of ACC.list) {
+    const st = id === ACC.active ? S : await loadState(id);
+    let av = '';
+    if (st.profile.avatar) {
+      if (id === ACC.active) av = urls[st.profile.avatar] || '';
+      else { const b = await imgGet(st.profile.avatar); if (b) { av = URL.createObjectURL(b); tmp.push(av); } }
+    }
+    rows.push({ id, st, av });
+  }
+  openSheet('Акаунти', `<div>${rows.map(r => `<div class="acc" data-act="switchAcc" data-id="${r.id}">
+      <div class="avatar" style="${r.av ? `background-image:url(${r.av})` : ''}">${r.av ? '' : '👤'}</div>
+      <div class="who2"><b>${esc(r.st.profile.username)}</b>${r.st.profile.verified ? BADGE : ''}<small>${esc(r.st.profile.name)}</small></div>
+      ${r.id === ACC.active ? '<span class="ok">✓</span>' : ''}
+      <button class="x" data-act="delAcc" data-id="${r.id}" aria-label="Видалити акаунт">🗑</button></div>`).join('')}</div>
+    <button class="btn" data-act="addAcc" style="width:100%;margin-top:12px">＋ Додати акаунт</button>
+    <p class="hint" style="margin-top:12px">Кожен акаунт — окремий макет зі своїми фото, сторіз і дописами. Усе зберігається в цьому телефоні.</p>`,
+  () => tmp.forEach(u => URL.revokeObjectURL(u)));
+}
+function closeAllOverlays() { closeViewer(); closeReels(); closeStories(); }
+async function switchTo(id) {
+  await flushSave(); closeAllOverlays();
+  S = await loadState(id); ACC.active = id; await kvSet('accounts', ACC);
+  resetUrls(); await loadUrls(S);
+  ptab = 'grid'; reorder = false;
+  renderAll(); scrollTo(0, 0);
+}
+async function newAccount() {
+  const id = uid(), st = blank();
+  st.profile.username = 'account_' + (ACC.list.length + 1);
+  await kvSet(stateKey(id), st);
+  ACC.list.push(id); await kvSet('accounts', ACC);
+  await switchTo(id);
+}
+async function removeAccount(id) {
+  if (ACC.list.length < 2) return toast('Має лишитись хоча б один акаунт');
+  if (!confirm('Видалити акаунт разом з усіма його фото та відео?')) return;
+  if (id === ACC.active) await switchTo(ACC.list.find(x => x !== id));
+  const st = await loadState(id);
+  for (const i of idsOf(st)) await dropImg(i);
+  await kvDel(stateKey(id));
+  ACC.list = ACC.list.filter(x => x !== id); await kvSet('accounts', ACC);
+  openAccounts();
+}
+
+/* ---------- posts ---------- */
+function newPost(extra) {
+  return Object.assign({ id: uid(), imgs: [], vids: {}, caption: '', done: false, pinned: false, reel: false, views: '', likes: '', likedBy: '', comments: '', place: '', date: today() }, extra);
+}
+async function addMedia() {
+  if (ptab === 'tagged') {
+    const files = await pickMedia('image/*'); if (!files.length) return;
+    toast('Додаю фото…'); const added = [];
+    for (const f of files) { try { const m = await fileToMedia(f); const p = newPost({ imgs: [m.img], owner: 'username' }); S.tagged.unshift(p); added.push(p); } catch {} }
+    save(); renderAll();
+    if (added.length === 1) openPost(added[0].id); else toast(added.length ? `Додано: ${added.length}. Відкрий кожне, щоб вказати автора` : 'Не вдалося відкрити фото');
+    return;
+  }
+  const reelsOnly = ptab === 'reels';
+  const files = await pickMedia(reelsOnly ? 'video/*' : 'image/*,video/*'); if (!files.length) return;
+  toast('Додаю…'); let ok = 0, big = 0;
+  for (const f of files) {
+    try {
+      if (reelsOnly && !isVideo(f)) continue;
+      const m = await fileToMedia(f);
+      S.posts.unshift(newPost({ imgs: [m.img], vids: m.vid ? { [m.img]: m.vid } : {}, reel: !!m.vid }));   // новий допис — зверху, як в Instagram
+      ok++;
+    } catch (e) { if (e.message === 'big') big++; }
+  }
+  normalize(); save(); renderAll();
+  toast(big ? 'Відео більше 500 МБ не додаю' : ok ? `Додано: ${ok}` : 'Не вдалося відкрити файл');
+}
+function findPost(id) {
+  let p = S.posts.find(x => x.id === id); if (p) return { p, tagged: false };
+  p = S.tagged.find(x => x.id === id); return p ? { p, tagged: true } : null;
+}
 function openPost(id) {
-  const i = S.posts.findIndex(p => p.id === id); if (i < 0) return;
-  const p = S.posts[i];
-  const wasOpen = !$('#sheet').classList.contains('hide');
+  const f = findPost(id); if (!f) return;
+  const { p, tagged } = f, list = tagged ? S.tagged : S.posts, i = list.indexOf(p);
+  const wasOpen = sheetOpen() && $('#sheet')._post;
   const html = `
-    <div class="slides ${p.imgs.length === 1 ? 'one' : ''}">${p.imgs.map(im => `<div class="slide"><img src="${urls[im] || ''}" alt="">${p.imgs.length > 1 ? `<button class="x" data-act="rmSlide" data-img="${im}">×</button>` : ''}</div>`).join('')}</div>
-    <div class="pos"><button class="btn" data-act="mv" data-d="-1" ${i === 0 ? 'disabled style="opacity:.4"' : ''}>← раніше</button><span>позиція ${i + 1} з ${S.posts.length}</span><button class="btn" data-act="mv" data-d="1" ${i === S.posts.length - 1 ? 'disabled style="opacity:.4"' : ''}>пізніше →</button></div>
-    <label class="f"><small>Підпис <span class="cnt" id="capCnt"></span></small><textarea id="cap" style="min-height:130px">${esc(p.caption)}</textarea></label>
+    <div class="slides ${p.imgs.length === 1 ? 'one' : ''}">${p.imgs.map(im => `<div class="slide"><img src="${urls[im] || ''}" alt="">${p.vids && p.vids[im] ? '<span class="play">▶ відео</span>' : ''}${p.imgs.length > 1 ? `<button class="x" data-act="rmSlide" data-img="${im}">×</button>` : ''}</div>`).join('')}</div>
+    ${tagged ? '' : `<div class="pos"><button class="btn" data-act="mv" data-d="-1" ${i === 0 ? 'disabled style="opacity:.4"' : ''}>← раніше</button><span>позиція ${i + 1} з ${list.length}</span><button class="btn" data-act="mv" data-d="1" ${i === list.length - 1 ? 'disabled style="opacity:.4"' : ''}>пізніше →</button></div>`}
+    ${tagged ? `<label class="f"><small>Хто опублікував (нік)</small><input data-pk="owner" value="${esc(p.owner || '')}"></label>` : ''}
+    <label class="f"><small>Підпис <span class="cnt" id="capCnt"></span></small><textarea id="cap" style="min-height:120px">${esc(p.caption)}</textarea></label>
     <label class="f"><small>Місце (геотег)</small><input data-pk="place" value="${esc(p.place || '')}"></label>
     <div style="display:flex;gap:10px"><label class="f" style="flex:1"><small>Вподобання</small><input data-pk="likes" value="${esc(p.likes || '')}"></label><label class="f" style="flex:1"><small>Коментарі</small><input data-pk="comments" value="${esc(p.comments || '')}"></label></div>
+    <label class="f"><small>Хто вподобав (нік) — рядок «Вподобали X та ще N»</small><input data-pk="likedBy" value="${esc(p.likedBy || '')}"></label>
     <label class="f"><small>Дата</small><input type="date" data-pk="date" value="${esc(p.date || '')}"></label>
-    <label class="f chk"><input type="checkbox" data-pk="pinned" ${p.pinned ? 'checked' : ''}> Закріпити в профілі (до 3)</label>
-    <div style="display:flex;gap:6px;margin-top:6px"><button class="btn" data-act="addSlide">＋ Ще фото (карусель)</button><button class="btn danger" data-act="delPost">Видалити</button></div>`;
+    ${tagged ? '' : `<label class="f chk"><input type="checkbox" data-pk="reel" ${p.reel ? 'checked' : ''}> Це Reel (показувати у вкладці Reels)</label>
+    <label class="f"><small>Перегляди Reel (напр. 12,5 тис.)</small><input data-pk="views" value="${esc(p.views || '')}"></label>
+    <label class="f chk"><input type="checkbox" data-pk="pinned" ${p.pinned ? 'checked' : ''}> Закріпити в профілі (до 3)</label>`}
+    <div style="display:flex;gap:6px;margin-top:6px"><button class="btn" data-act="addSlide">＋ Ще фото/відео (карусель)</button><button class="btn danger" data-act="delPost">Видалити</button></div>`;
   if (wasOpen) { const keep = $('.sheet').scrollTop; $('#sheet').innerHTML = `<div class="sheet"><div class="bar"><b>Допис</b><button data-act="closeSheet">Готово</button></div>${html}</div>`; $('.sheet').scrollTop = keep; }
   else openSheet('Допис', html);
   const sh = $('#sheet'); sh._post = p;
@@ -571,39 +935,43 @@ function openPost(id) {
       if (t.checked && S.posts.filter(x => x.pinned).length >= 3) { t.checked = false; toast('Максимум 3 закріплені'); return; }
       p.pinned = t.checked; normalize(); save(); renderGrid(); openPost(p.id); return;
     }
+    if (k === 'reel') { p.reel = t.checked; save(); renderGrid(); return; }
     p[k] = t.value; save();
   };
 }
 function movePost(d) {
   const p = $('#sheet')._post, i = S.posts.indexOf(p), j = i + d;
-  if (j < 0 || j >= S.posts.length) return;
+  if (i < 0 || j < 0 || j >= S.posts.length) return;
   S.posts.splice(i, 1); S.posts.splice(j, 0, p); normalize();
   save(); renderGrid(); openPost(p.id);
 }
 async function addSlide() {
-  const p = $('#sheet')._post;
-  const files = await pickFiles($('#fileIn'));
-  for (const f of files) { if (p.imgs.length >= 20) { toast('Максимум 20 фото'); break; } try { p.imgs.push(await addImg(await fileToBlob(f, 1440))); } catch {} }
+  const p = $('#sheet')._post; if (!p) return;
+  const files = await pickMedia('image/*,video/*');
+  for (const f of files) {
+    if (p.imgs.length >= 20) { toast('Максимум 20 у каруселі'); break; }
+    try { const m = await fileToMedia(f); p.imgs.push(m.img); if (m.vid) (p.vids = p.vids || {})[m.img] = m.vid; } catch {}
+  }
   save(); renderGrid(); openPost(p.id);
 }
 async function rmSlide(img) {
   const p = $('#sheet')._post;
   if (p.imgs.length < 2) return;
-  p.imgs = p.imgs.filter(x => x !== img); await dropImg(img);
+  p.imgs = p.imgs.filter(x => x !== img); await dropSlide(p, img);
   save(); renderGrid(); openPost(p.id);
 }
 async function delPost() {
   const p = $('#sheet')._post;
   if (!confirm('Видалити цей допис?')) return;
-  for (const im of p.imgs) await dropImg(im);
-  S.posts = S.posts.filter(x => x !== p);
+  await dropPostMedia(p);
+  S.posts = S.posts.filter(x => x !== p); S.tagged = S.tagged.filter(x => x !== p);
   closeSheet();
 }
 
 /* ---------- reorder (drag & drop у сітці) ---------- */
 let drag = null;
 function startDrag(e) {
-  if (!reorder) return;
+  if (!reorder || ptab !== 'grid') return;
   const cell = e.target.closest('.cell'); if (!cell) return;
   e.preventDefault();
   const r = cell.getBoundingClientRect();
@@ -652,13 +1020,15 @@ async function copyText(t) {
   toast('Скопійовано ✓');
 }
 function download(blob, name) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000); }
+const extOf = b => ({ 'image/jpeg': 'jpg', 'image/png': 'png', 'video/mp4': 'mp4', 'video/quicktime': 'mov', 'video/webm': 'webm' }[b.type] || (b.type.split('/')[1] || 'bin'));
 async function shareFiles(blobs, base) {
-  const files = blobs.map((b, i) => new File([b], `${base}${blobs.length > 1 ? '-' + (i + 1) : ''}.jpg`, { type: 'image/jpeg' }));
+  if (!blobs.length) return toast('Немає що зберігати');
+  const files = blobs.map((b, i) => new File([b], `${base}${blobs.length > 1 ? '-' + (i + 1) : ''}.${extOf(b)}`, { type: b.type || 'application/octet-stream' }));
   try {
     if (navigator.canShare && navigator.canShare({ files })) { await navigator.share({ files }); return; }
   } catch (e) { if (e.name === 'AbortError') return; }
   files.forEach(f => download(f, f.name));
-  toast('Фото збережено у файли');
+  toast('Збережено у файли');
 }
 async function shareAvatar() {
   const b = S.profile.avatar && await imgGet(S.profile.avatar);
@@ -667,13 +1037,21 @@ async function shareAvatar() {
 }
 async function sharePost(id) {
   const p = S.posts.find(x => x.id === id); if (!p) return;
-  const blobs = []; for (const im of p.imgs) { const b = await imgGet(im); if (b) blobs.push(b); }
+  const blobs = [];
+  for (const im of p.imgs) { const b = await imgGet(p.vids && p.vids[im] ? p.vids[im] : im); if (b) blobs.push(b); }
   shareFiles(blobs, 'post-' + (S.posts.length - S.posts.indexOf(p)));
+}
+async function shareSet(key) {
+  const set = key === 'my' ? S.my : S.highlights.find(h => h.id === key); if (!set) return;
+  const blobs = []; for (const s of set.stories) { const b = await imgGet(s.vid || s.img); if (b) blobs.push(b); }
+  shareFiles(blobs, key === 'my' ? 'story' : 'highlight');
 }
 function renderMove() {
   const p = S.profile;
   const order = S.posts.slice().reverse();     // публікуємо від найстарішого (внизу сітки) до найновішого (зверху)
   const left = order.filter(x => !x.done).length;
+  const sets = [...(S.my.stories.length ? [{ k: 'my', t: 'Мої сторіз', n: S.my.stories.length }] : []),
+    ...S.highlights.filter(h => (h.stories || []).length).map(h => ({ k: h.id, t: 'Актуальне: ' + (h.title || 'без назви'), n: h.stories.length }))];
   $('#v-move').innerHTML = `
     <h2>1. Профіль</h2>
     <p class="hint">Скопіюй текст і встав у «Редагувати профіль» в Instagram.</p>
@@ -688,42 +1066,66 @@ function renderMove() {
       <div class="card step ${x.done ? 'done' : ''}">
         <div class="th" style="background-image:url(${urls[x.imgs[0]] || ''})"></div>
         <div class="tx">
-          <div class="t">№${i + 1}${x.imgs.length > 1 ? ` · ${x.imgs.length} фото` : ''}${x.pinned ? ' · 📌 потім закріпити' : ''}</div>
+          <div class="t">№${i + 1}${x.reel ? ' · Reel' : ''}${x.imgs.length > 1 ? ` · ${x.imgs.length} шт.` : ''}${x.pinned ? ' · 📌 потім закріпити' : ''}</div>
           <div class="cap">${esc(x.caption) || '<i>без підпису</i>'}</div>
           <div class="act">
             <button class="btn" data-act="copyCap" data-id="${x.id}">Підпис</button>
-            <button class="btn" data-act="sharePost" data-id="${x.id}">Фото</button>
+            <button class="btn" data-act="sharePost" data-id="${x.id}">Фото/відео</button>
             <button class="btn ${x.done ? 'on' : ''}" data-act="done" data-id="${x.id}">${x.done ? '✓ Опубліковано' : 'Опубліковано?'}</button>
           </div>
         </div>
       </div>`).join('') : '<div class="card empty">Поки немає дописів.</div>'}
-    <h2>3. Резервна копія</h2>
-    <p class="hint">Усе зберігається тільки в цьому телефоні. Раз на деякий час зберігай копію — наприклад, у «Файли» чи iCloud — і можна відновити її на новому телефоні.</p>
+    <h2>3. Сторіз і актуальне</h2>
+    <p class="hint">Збережи файли й виклади в Instagram як сторіз. Актуальне збирай зі своїх сторіз у профілі. Текст на сторіз додається вже в Instagram.</p>
+    ${sets.length ? `<div class="card">${sets.map(s => `<div class="field"><div><b>${esc(s.t)}</b><div class="v">${s.n} шт.</div></div><button class="btn" data-act="shareSet" data-k="${s.k}">Зберегти</button></div>`).join('')}</div>` : '<div class="card empty">Сторіз ще немає.</div>'}
+    <h2>4. Резервна копія</h2>
+    <p class="hint">Усе зберігається тільки в цьому телефоні. Зберігай копію (наприклад, у «Файли» чи iCloud) — її можна відновити на новому телефоні. У копію входять усі акаунти, фото й обкладинки відео, <b>самі відео не входять</b> (вони завеликі) — їх збережи окремо через «Фото/відео» вище.</p>
     <div class="btns"><button class="btn" data-act="backup">Зберегти копію</button><button class="btn" data-act="restore">Відновити з копії</button></div>`;
 }
 
 function blobToDataURL(b) { return new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(b); }); }
+function stripVideos(st) {
+  const c = JSON.parse(JSON.stringify(st));
+  [...c.posts, ...c.tagged].forEach(p => { delete p.vids; });
+  [...c.highlights, c.my].forEach(set => (set.stories || []).forEach(s => { s.vid = null; }));
+  return c;
+}
 async function backup() {
   toast('Готую копію…');
-  const images = {};
-  for (const id of usedImgIds()) { const b = await imgGet(id); if (b) images[id] = await blobToDataURL(b); }
-  const blob = new Blob([JSON.stringify({ app: 'ig-editor', v: 1, state: S, images })], { type: 'application/json' });
+  await flushSave();
+  const accounts = {}, images = {};
+  for (const id of ACC.list) {
+    const clean = stripVideos(id === ACC.active ? S : await loadState(id));
+    accounts[id] = clean;
+    for (const i of idsOf(clean)) if (!(i in images)) { const b = await imgGet(i); if (b) images[i] = await blobToDataURL(b); }
+  }
+  const blob = new Blob([JSON.stringify({ app: 'ig-editor', v: 2, active: ACC.active, accounts, images })], { type: 'application/json' });
   const file = new File([blob], `instagram-maket-${new Date().toISOString().slice(0, 10)}.json`, { type: 'application/json' });
   try { if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file] }); return; } }
   catch (e) { if (e.name === 'AbortError') return; }
   download(file, file.name);
 }
 async function restore() {
-  const [f] = await pickFiles($('#fileBackup')); if (!f) return;
+  const [f] = await pickFiles($('#fileBackup'), 'application/json,.json'); if (!f) return;
   try {
     const d = JSON.parse(await f.text());
-    if (d.app !== 'ig-editor' || !d.state) throw 0;
-    if (!confirm('Замінити поточний макет копією з файлу?')) return;
-    for (const id of await imgKeys()) await dropImg(id);
-    for (const id of Object.keys(urls)) { URL.revokeObjectURL(urls[id]); delete urls[id]; }
-    for (const [id, data] of Object.entries(d.images || {})) { const b = await (await fetch(data)).blob(); await imgPut(id, b); urls[id] = URL.createObjectURL(b); }
-    S = Object.assign(blank(), d.state);
-    await kvSet('state', S); renderAll(); toast('Відновлено ✓');
+    if (d.app !== 'ig-editor' || !(d.accounts || d.state)) throw 0;
+    if (!confirm(d.accounts ? 'Замінити ВСІ поточні акаунти копією з файлу?' : 'Додати акаунт із файлу?')) return;
+    await flushSave();
+    const put = async images => { for (const [id, data] of Object.entries(images || {})) await imgPut(id, await (await fetch(data)).blob()); };
+    if (d.accounts) {
+      for (const id of ACC.list) { for (const i of idsOf(id === ACC.active ? S : await loadState(id))) await dropImg(i); await kvDel(stateKey(id)); }
+      await put(d.images);
+      for (const [id, st] of Object.entries(d.accounts)) await kvSet(stateKey(id), Object.assign(blank(), st));
+      ACC = { active: d.accounts[d.active] ? d.active : Object.keys(d.accounts)[0], list: Object.keys(d.accounts) };
+    } else {
+      await put(d.images);
+      const id = uid(); await kvSet(stateKey(id), Object.assign(blank(), d.state)); ACC.list.push(id); ACC.active = id;
+    }
+    await kvSet('accounts', ACC);
+    closeAllOverlays();
+    S = await loadState(ACC.active); resetUrls(); await loadUrls(S); ptab = 'grid';
+    renderAll(); toast('Відновлено ✓');
   } catch { toast('Це не схоже на файл копії'); }
 }
 
@@ -738,34 +1140,61 @@ function setTab(t) {
 document.addEventListener('click', e => {
   if (e.target.id === 'sheet') return closeSheet();
   const cell = e.target.closest('.cell');
-  if (cell && !reorder && !cell.classList.contains('ghost')) return openViewer(cell.dataset.id);
+  if (cell && !reorder && !cell.classList.contains('ghost')) {
+    if (ptab === 'reels') return openReels(cell.dataset.id);
+    return openViewer(cell.dataset.id, ptab === 'tagged' ? 'tagged' : 'posts');
+  }
   const el = e.target.closest('[data-act]'); if (!el) return;
   const d = el.dataset, id = d.id;
   switch (d.act) {
     case 'tab': setTab(d.tab); break;
+    case 'ptab': ptab = d.p; reorder = false; renderGrid(); break;
     case 'editProfile': editProfile(); break;
-    case 'addPhotos': addPhotos(); break;
-    case 'toggleReorder': reorder = !reorder; renderGrid(); if (reorder) toast('Тримай фото й перетягуй'); break;
+    case 'addMedia': addMedia(); break;
+    case 'toggleReorder':
+      if (ptab !== 'grid') { toast('Порядок змінюється у вкладці сітки'); break; }
+      reorder = !reorder; renderGrid(); if (reorder) toast('Тримай фото й перетягуй'); break;
+    case 'toggleClean': { const on = document.body.classList.toggle('clean'); if (on && reorder) { reorder = false; renderGrid(); } break; }
     case 'closeSheet': closeSheet(); break;
     case 'closeViewer': closeViewer(); break;
+    case 'closeReels': closeReels(); break;
+    case 'closeStories': closeStories(); break;
+    case 'editStoriesBtn': { const ed = SV && SV.edit; closeStories(); if (ed) ed(); break; }
     case 'editPost': openPost(id); break;
-    case 'like': el.classList.toggle('lk-on'); break;
-    case 'saveMark': el.classList.toggle('sv-on'); break;
-    case 'more': { const fc = el.closest('.fc'); fc.querySelector('.short').classList.add('hide'); el.classList.add('hide'); fc.querySelector('.full').classList.remove('hide'); break; }
-    case 'fake': toast('Це лише макет 🙂'); break;
-    case 'toggleClean': { const on = document.body.classList.toggle('clean'); if (on && reorder) { reorder = false; renderGrid(); } break; }
+    case 'editMy': editMyStories(); break;
     case 'pickAvatar': pickAvatar(); break;
-    case 'editHl': editHl(id); break;
+    case 'hlTap': hlTap(id); break;
+    case 'avatarTap': avatarTap(); break;
     case 'pickCover': pickCover(); break;
     case 'delHl': delHl(); break;
+    case 'addStories': addStories(); break;
+    case 'rmStory': rmStory(d.sid); break;
+    case 'accounts': openAccounts(); break;
+    case 'switchAcc': if (id === ACC.active) closeSheet(); else switchTo(id).then(closeSheet); break;
+    case 'addAcc': closeSheet(); newAccount().then(editProfile); break;
+    case 'delAcc': removeAccount(id); break;
     case 'mv': movePost(+d.d); break;
     case 'addSlide': addSlide(); break;
     case 'rmSlide': rmSlide(d.img); break;
     case 'delPost': delPost(); break;
+    case 'like': el.classList.toggle('lk-on'); break;
+    case 'saveMark': el.classList.toggle('sv-on'); break;
+    case 'toggleMute': { const v = el.querySelector('video'), m = el.querySelector('.mute'); if (v) { v.muted = !v.muted; if (m) m.textContent = v.muted ? '🔇' : '🔊'; if (!v.muted) v.play().catch(() => {}); } break; }
+    case 'rtap': { const v = el.querySelector('video'); if (v) { v.paused ? v.play().catch(() => {}) : v.pause(); } break; }
+    case 'rmute': {
+      rMuted = !rMuted; $('#rmuteBtn').textContent = rMuted ? '🔇' : '🔊';
+      document.querySelectorAll('#rlist video').forEach(v => { v.muted = rMuted; });
+      const rl = $('#rlist'), cur = [...rl.children].find(s => Math.abs(s.getBoundingClientRect().top) < 5);
+      const v = cur && cur.querySelector('video'); if (v) v.play().catch(() => {});
+      break;
+    }
+    case 'more': { const fc = el.closest('.fc'); fc.querySelector('.short').classList.add('hide'); el.classList.add('hide'); fc.querySelector('.full').classList.remove('hide'); break; }
+    case 'fake': toast('Це лише макет 🙂'); break;
     case 'copyProf': copyText([S.profile.username, S.profile.name, S.profile.bio, S.profile.link][+d.i] || ''); break;
     case 'shareAv': shareAvatar(); break;
     case 'copyCap': copyText((S.posts.find(x => x.id === id) || {}).caption || ''); break;
     case 'sharePost': sharePost(id); break;
+    case 'shareSet': shareSet(d.k); break;
     case 'done': { const p = S.posts.find(x => x.id === id); p.done = !p.done; save(); renderMove(); break; }
     case 'backup': backup(); break;
     case 'restore': restore(); break;
@@ -780,11 +1209,21 @@ gridEl.addEventListener('pointercancel', endDrag);
 /* ---------- init ---------- */
 (async function init() {
   try {
-    const saved = await kvGet('state');
-    if (saved) S = Object.assign(blank(), saved);
-    for (const id of usedImgIds()) { const b = await imgGet(id); if (b) urls[id] = URL.createObjectURL(b); }
-    // прибрати «осиротілі» фото
-    const used = usedImgIds();
+    let acc = await kvGet('accounts');
+    if (!acc) {   // перший запуск або міграція зі старого формату (один акаунт)
+      const old = await kvGet('state'), id = uid();
+      acc = { active: id, list: [id] };
+      await kvSet(stateKey(id), Object.assign(blank(), old || {}));
+      await kvSet('accounts', acc);
+      if (old) await kvDel('state');
+    }
+    ACC = acc;
+    if (!ACC.list.includes(ACC.active)) ACC.active = ACC.list[0];
+    S = await loadState(ACC.active);
+    await loadUrls(S);
+    // прибрати «осиротілі» файли (використані жодним акаунтом)
+    const used = new Set();
+    for (const id of ACC.list) idsOf(id === ACC.active ? S : await loadState(id)).forEach(i => used.add(i));
     for (const k of await imgKeys()) if (!used.has(k)) await imgDel(k);
     if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
   } catch (e) {
