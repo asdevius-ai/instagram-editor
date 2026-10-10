@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Макет Insta">
+<meta name="theme-color" content="#ffffff">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<title>Макет профілю</title>
+<style>
+:root{
+  --bg:#fff;--fg:#111;--muted:#737373;--line:#dbdbdb;--soft:#efefef;--accent:#0095f6;--danger:#ed4956;--card:#fff;
+  --safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#000;--fg:#f5f5f5;--muted:#a8a8a8;--line:#262626;--soft:#262626;--card:#121212}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+body{padding-bottom:calc(64px + var(--safe-b));-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+input,textarea{font:inherit;color:var(--fg)}
+.wrap{max-width:560px;margin:0 auto}
+.hide{display:none!important}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(10px + var(--safe-t)) 16px 10px;display:flex;align-items:center;gap:6px;font-size:19px;font-weight:700;border-bottom:1px solid var(--line)}
+.top .grow{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top .ico{width:26px;height:26px}
+
+/* profile */
+.prof{padding:14px 16px 0}
+.row1{display:flex;align-items:center;gap:22px}
+.avatar{width:86px;height:86px;border-radius:50%;background:var(--soft) center/cover;flex:none;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted)}
+.stats{flex:1;display:flex;justify-content:space-around;text-align:center}
+.stats b{display:block;font-size:17px}
+.stats span{font-size:13px}
+.name{font-weight:600;margin-top:12px}
+.cat{color:var(--muted);font-size:14px}
+.bio{white-space:pre-wrap;word-break:break-word;margin-top:2px}
+.link{color:#00376b;font-weight:600;word-break:break-all}
+@media (prefers-color-scheme:dark){.link{color:#e0f1ff}}
+.btns{display:flex;gap:6px;margin:14px 0}
+.btn{flex:1;background:var(--soft);border-radius:8px;padding:8px 6px;font-weight:600;text-align:center;font-size:14px}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.on{background:var(--fg);color:var(--bg)}
+.btn.danger{color:var(--danger)}
+.hl{display:flex;gap:14px;overflow-x:auto;padding:4px 0 14px;scrollbar-width:none}
+.hl::-webkit-scrollbar{display:none}
+.hl button{flex:none;width:68px;text-align:center;font-size:12px}
+.hl .c{width:64px;height:64px;border-radius:50%;border:1px solid var(--line);margin:0 auto 4px;background:var(--soft) center/cover;display:grid;place-items:center;font-size:28px;color:var(--muted);padding:3px;background-clip:content-box}
+.hl span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tabs{display:flex;border-top:1px solid var(--line)}
+.tabs div{flex:1;display:grid;place-items:center;padding:10px 0;color:var(--muted)}
+.tabs div.a{color:var(--fg);box-shadow:inset 0 -1px 0 var(--fg)}
+.tabs svg{width:24px;height:24px}
+
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.cell{position:relative;aspect-ratio:3/4;background:var(--soft) center/cover;overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.cell img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.cell .car{position:absolute;top:6px;right:6px;width:20px;height:20px;filter:drop-shadow(0 0 2px rgba(0,0,0,.6))}
+.cell .num{position:absolute;left:6px;bottom:6px;background:rgba(0,0,0,.6);color:#fff;border-radius:10px;padding:1px 7px;font-size:12px}
+.cell.ghost{position:fixed;z-index:50;pointer-events:none;opacity:.9;box-shadow:0 8px 24px rgba(0,0,0,.4);transform:scale(1.06)}
+.cell.ph{opacity:.25}
+.reorder .cell{touch-action:none}
+.empty{padding:40px 24px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--fg);font-size:18px;margin-bottom:6px}
+
+/* bottom nav */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--bg);border-top:1px solid var(--line);display:flex;padding-bottom:var(--safe-b)}
+.nav button{flex:1;padding:10px 0 8px;display:grid;justify-items:center;gap:2px;font-size:11px;color:var(--muted)}
+.nav button.a{color:var(--fg);font-weight:600}
+.nav svg{width:26px;height:26px}
+
+/* transfer view */
+.pad{padding:16px}
+h2{font-size:18px;margin:22px 0 6px}
+h2:first-child{margin-top:0}
+.hint{color:var(--muted);font-size:14px;margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px}
+.step{display:flex;gap:10px;align-items:flex-start}
+.step .th{width:60px;aspect-ratio:3/4;border-radius:6px;background:var(--soft) center/cover;flex:none;position:relative}
+.step .tx{flex:1;min-width:0}
+.step .tx .cap{font-size:13px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:6px}
+.step .tx .t{font-weight:600}
+.step .act{display:flex;gap:6px;flex-wrap:wrap}
+.step .act .btn{flex:none;padding:6px 10px;font-size:13px}
+.step.done{opacity:.5}
+.field{display:flex;align-items:center;gap:8px;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+.field:last-child{border:0}
+.field .v{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+.field .btn{flex:none;padding:6px 12px}
+
+/* sheet */
+#sheet{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:14px 16px calc(16px + var(--safe-b));-webkit-overflow-scrolling:touch}
+.sheet .bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sheet .bar b{font-size:17px}
+.sheet .bar button{color:var(--accent);font-weight:600}
+label.f{display:block;margin:10px 0}
+label.f small{display:block;color:var(--muted);margin-bottom:3px}
+label.f input,label.f textarea{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:9px 10px;font-size:16px}
+label.f textarea{min-height:92px;resize:vertical}
+.cnt{float:right}
+.pic{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
+.pic .avatar{width:64px;height:64px}
+.slides{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;margin-bottom:6px;scrollbar-width:none}
+.slides::-webkit-scrollbar{display:none}
+.slide{flex:none;width:72%;scroll-snap-align:center;position:relative;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:var(--soft)}
+.slides.one .slide{width:100%}
+.slide img{width:100%;height:100%;object-fit:cover}
+.slide .x{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:18px;display:grid;place-items:center}
+.pos{display:flex;align-items:center;gap:8px;margin:8px 0}
+.pos span{flex:1;text-align:center;color:var(--muted)}
+.pos .btn{flex:none;width:96px}
+
+#toast{position:fixed;left:50%;bottom:calc(84px + var(--safe-b));transform:translateX(-50%);background:#262626;color:#fff;padding:9px 16px;border-radius:20px;z-index:40;font-size:14px;max-width:90%;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.s{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="v-feed">
+    <div class="top">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      <span class="grow" id="topname"></span>
+    </div>
+    <div class="prof">
+      <div class="row1">
+        <div class="avatar" id="avatar"></div>
+        <div class="stats">
+          <div><b id="stPosts">0</b><span>дописи</span></div>
+          <div><b id="stFol"></b><span>підписники</span></div>
+          <div><b id="stFg"></b><span>підписки</span></div>
+        </div>
+      </div>
+      <div class="name" id="pName"></div>
+      <div class="cat" id="pCat"></div>
+      <div class="bio" id="pBio"></div>
+      <div class="link" id="pLink"></div>
+      <div class="btns">
+        <button class="btn" data-act="editProfile">Редагувати профіль</button>
+        <button class="btn" data-act="addPhotos">＋ Фото</button>
+        <button class="btn" data-act="toggleReorder" id="btnReorder">Порядок</button>
+      </div>
+      <div class="hl" id="hl"></div>
+    </div>
+    <div class="tabs">
+      <div class="a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 8h18M9 3l3 5M15 3l3 5"/><path d="m10 12 5 3-5 3z" fill="currentColor"/></svg></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z" opacity="0"/><path d="M5 3h14a1 1 0 0 1 1 1v13l-3 3H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><circle cx="12" cy="10" r="2.5"/><path d="M7.5 17a5 5 0 0 1 9 0"/></svg></div>
+    </div>
+    <div id="grid"></div>
+  </div>
+
+  <div id="v-move" class="pad hide"></div>
+</div>
+
+<nav class="nav">
+  <button data-act="tab" data-tab="feed" class="a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>Макет</button>
+  <button data-act="tab" data-tab="move"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0 4 4m-4-4L8 8"/><path d="M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></svg>В Instagram</button>
+</nav>
+
+<div id="sheet" class="hide"></div>
+<div id="toast"></div>
+<input type="file" id="fileIn" accept="image/*" multiple hidden>
+<input type="file" id="fileOne" accept="image/*" hidden>
+<input type="file" id="fileBackup" accept="application/json,.json" hidden>
+
+<script>
+'use strict';
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let toastT;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('s'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('s'), 2200); }
+
+/* ---------- storage (IndexedDB: стан + фото) ---------- */
+let dbp;
+function db() {
+  return dbp || (dbp = new Promise((res, rej) => {
+    const r = indexedDB.open('ig-editor', 1);
+    r.onupgradeneeded = () => { r.result.createObjectStore('kv'); r.result.createObjectStore('img'); };
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  }));
+}
+async function idb(store, mode, fn) {
+  const d = await db();
+  return new Promise((res, rej) => {
+    const t = d.transaction(store, mode);
+    const rq = fn(t.objectStore(store));
+    t.oncomplete = () => res(rq && rq.result);
+    t.onerror = t.onabort = () => rej(t.error);
+  });
+}
+const kvGet = k => idb('kv', 'readonly', s => s.get(k));
+const kvSet = (k, v) => idb('kv', 'readwrite', s => s.put(v, k));
+const imgPut = (id, b) => idb('img', 'readwrite', s => s.put(b, id));
+const imgGet = id => idb('img', 'readonly', s => s.get(id));
+const imgDel = id => idb('img', 'readwrite', s => s.delete(id));
+const imgKeys = () => idb('img', 'readonly', s => s.getAllKeys());
+
+/* ---------- state ---------- */
+const blank = () => ({
+  profile: { username: 'your_username', name: 'Твоє ім’я', category: '', bio: 'Напиши тут біо ✨\nДруга строчка', link: '', avatar: null, followers: '0', following: '0' },
+  highlights: [],
+  posts: []   // {id, imgs:[imgId], caption, done}
+});
+let S = blank();
+const urls = {};            // imgId -> objectURL
+let reorder = false;
+let saveT;
+function save() { clearTimeout(saveT); saveT = setTimeout(() => kvSet('state', S).catch(() => toast('Не вдалося зберегти 😕')), 250); }
+
+async function addImg(blob) {
+  const id = uid();
+  await imgPut(id, blob);
+  urls[id] = URL.createObjectURL(blob);
+  return id;
+}
+async function dropImg(id) {
+  if (!id) return;
+  if (urls[id]) { URL.revokeObjectURL(urls[id]); delete urls[id]; }
+  await imgDel(id).catch(() => {});
+}
+function usedImgIds() {
+  const s = new Set();
+  if (S.profile.avatar) s.add(S.profile.avatar);
+  S.highlights.forEach(h => h.cover && s.add(h.cover));
+  S.posts.forEach(p => p.imgs.forEach(i => s.add(i)));
+  return s;
+}
+
+/* ---------- image processing ---------- */
+function fileToBlob(file, max, square = false, q = .88) {
+  return new Promise((res, rej) => {
+    const u = URL.createObjectURL(file), im = new Image();
+    im.onload = () => {
+      const w = im.naturalWidth, h = im.naturalHeight;
+      let sx = 0, sy = 0, sw = w, sh = h;
+      if (square) { const m = Math.min(w, h); sx = (w - m) / 2; sy = (h - m) / 2; sw = sh = m; }
+      const k = Math.min(1, max / Math.max(sw, sh));
+      const c = document.createElement('canvas');
+      c.width = Math.round(sw * k); c.height = Math.round(sh * k);
+      c.getContext('2d').drawImage(im, sx, sy, sw, sh, 0, 0, c.width, c.height);
+      c.toBlob(b => { URL.revokeObjectURL(u); b ? res(b) : rej(new Error('encode')); }, 'image/jpeg', q);
+    };
+    im.onerror = () => { URL.revokeObjectURL(u); rej(new Error('load')); };
+    im.src = u;
+  });
+}
+function pickFiles(input) {
+  return new Promise(res => {
+    input.value = '';
+    input.onchange = () => res([...input.files]);
+    input.click();
+  });
+}
+
+/* ---------- render: profile ---------- */
+const ICON_CAROUSEL = '<svg class="car" viewBox="0 0 24 24" fill="#fff"><path d="M7 3h12a2 2 0 0 1 2 2v12h-2V5H7z"/><rect x="3" y="7" width="14" height="14" rx="2"/></svg>';
+function renderProfile() {
+  const p = S.profile;
+  $('#topname').textContent = p.username || 'username';
+  const av = $('#avatar');
+  av.style.backgroundImage = p.avatar && urls[p.avatar] ? `url(${urls[p.avatar]})` : '';
+  av.textContent = p.avatar ? '' : '👤';
+  $('#stPosts').textContent = S.posts.length;
+  $('#stFol').textContent = p.followers || '0';
+  $('#stFg').textContent = p.following || '0';
+  $('#pName').textContent = p.name || '';
+  $('#pCat').textContent = p.category || '';
+  $('#pBio').textContent = p.bio || '';
+  $('#pLink').textContent = p.link || '';
+  $('#hl').innerHTML =
+    S.highlights.map(h => `<button data-act="editHl" data-id="${h.id}"><div class="c" style="${h.cover && urls[h.cover] ? `background-image:url(${urls[h.cover]})` : ''}">${h.cover ? '' : '★'}</div><span>${esc(h.title || ' ')}</span></button>`).join('') +
+    `<button data-act="editHl" data-id=""><div class="c">＋</div><span>Створити</span></button>`;
+}
+function renderGrid() {
+  const g = $('#grid');
+  g.className = reorder ? 'reorder' : '';
+  $('#btnReorder').classList.toggle('on', reorder);
+  $('#btnReorder').textContent = reorder ? 'Готово' : 'Порядок';
+  if (!S.posts.length) {
+    g.innerHTML = '<div class="empty"><b>Поки порожньо</b>Натисни «＋ Фото» і вибери знімки з галереї — вони з’являться в сітці так, як виглядатимуть в Instagram.</div>';
+    return;
+  }
+  g.innerHTML = '<div class="grid">' + S.posts.map(p =>
+    `<div class="cell" data-id="${p.id}"><img src="${urls[p.imgs[0]] || ''}" alt="" draggable="false">${p.imgs.length > 1 ? ICON_CAROUSEL : ''}</div>`).join('') + '</div>';
+}
+function renderAll() { renderProfile(); renderGrid(); if (!$('#v-move').classList.contains('hide')) renderMove(); }
+
+/* ---------- sheets ---------- */
+function openSheet(title, body, onClose) {
+  const s = $('#sheet');
+  s.innerHTML = `<div class="sheet"><div class="bar"><b>${esc(title)}</b><button data-act="closeSheet">Готово</button></div>${body}</div>`;
+  s.classList.remove('hide');
+  s._onClose = onClose;
+  document.body.style.overflow = 'hidden';
+}
+function closeSheet() {
+  const s = $('#sheet');
+  s.classList.add('hide');
+  document.body.style.overflow = '';
+  const cb = s._onClose; s._onClose = null;
+  if (cb) cb();
+  save(); renderAll();
+}
+
+function editProfile() {
+  const p = S.profile;
+  const f = (k, label, ml) => `<label class="f"><small>${label}</small>${ml ? `<textarea data-k="${k}">${esc(p[k])}</textarea>` : `<input data-k="${k}" value="${esc(p[k])}">`}</label>`;
+  openSheet('Редагувати профіль', `
+    <div class="pic"><div class="avatar" id="shAv"></div><button class="btn" data-act="pickAvatar">Змінити фото профілю</button></div>
+    ${f('username', 'Ім’я користувача')}${f('name', 'Ім’я')}${f('category', 'Категорія / посада (сірий рядок)')}
+    ${f('bio', 'Біо (до 150 символів) <span class="cnt" id="bioCnt"></span>', true)}${f('link', 'Посилання')}
+    <label class="f"><small>Підписники (можна «1,2 тис.»)</small><input data-k="followers" value="${esc(p.followers)}"></label>
+    <label class="f"><small>Підписки</small><input data-k="following" value="${esc(p.following)}"></label>`);
+  const sh = $('#sheet');
+  const av = () => { const a = $('#shAv'); a.style.backgroundImage = p.avatar && urls[p.avatar] ? `url(${urls[p.avatar]})` : ''; a.textContent = p.avatar ? '' : '👤'; };
+  const cnt = () => { const n = [...p.bio].length; const c = $('#bioCnt'); c.textContent = n + '/150'; c.style.color = n > 150 ? 'var(--danger)' : ''; };
+  av(); cnt();
+  sh.oninput = e => {
+    const k = e.target.dataset.k; if (!k) return;
+    p[k] = e.target.value; if (k === 'bio') cnt(); save(); renderProfile();
+  };
+  sh._avRefresh = av;
+}
+
+async function pickAvatar() {
+  const [f] = await pickFiles($('#fileOne')); if (!f) return;
+  try {
+    const old = S.profile.avatar;
+    S.profile.avatar = await addImg(await fileToBlob(f, 400, true));
+    await dropImg(old);
+    save(); renderProfile(); const sh = $('#sheet'); sh._avRefresh && sh._avRefresh();
+  } catch { toast('Не вдалося відкрити фото'); }
+}
+
+function editHl(id) {
+  let h = S.highlights.find(x => x.id === id);
+  const isNew = !h;
+  if (isNew) h = { id: uid(), title: '', cover: null };
+  openSheet(isNew ? 'Нове актуальне' : 'Актуальне', `
+    <div class="pic"><div class="avatar" id="shCv"></div><button class="btn" data-act="pickCover">Обкладинка</button></div>
+    <label class="f"><small>Назва</small><input id="hlTitle" maxlength="16" value="${esc(h.title)}"></label>
+    ${isNew ? '' : '<button class="btn danger" data-act="delHl" style="width:100%;margin-top:8px">Видалити</button>'}`,
+  () => { if (isNew && (h.title || h.cover) && !S.highlights.includes(h)) S.highlights.push(h); });
+  const sh = $('#sheet');
+  const cv = () => { const a = $('#shCv'); a.style.backgroundImage = h.cover && urls[h.cover] ? `url(${urls[h.cover]})` : ''; a.textContent = h.cover ? '' : '★'; };
+  cv();
+  sh.oninput = e => { if (e.target.id === 'hlTitle') { h.title = e.target.value; if (!isNew) save(); } };
+  sh._hl = h; sh._cv = cv; sh._isNew = isNew;
+}
+async function pickCover() {
+  const sh = $('#sheet'), h = sh._hl; if (!h) return;
+  const [f] = await pickFiles($('#fileOne')); if (!f) return;
+  try { const old = h.cover; h.cover = await addImg(await fileToBlob(f, 300, true)); await dropImg(old); sh._cv(); save(); } catch { toast('Не вдалося відкрити фото'); }
+}
+async function delHl() {
+  const sh = $('#sheet'), h = sh._hl; if (!h || !confirm('Видалити це актуальне?')) return;
+  await dropImg(h.cover);
+  S.highlights = S.highlights.filter(x => x !== h);
+  sh._onClose = null; closeSheet();
+}
+
+/* ---------- posts ---------- */
+async function addPhotos() {
+  const files = await pickFiles($('#fileIn')); if (!files.length) return;
+  toast('Додаю фото…');
+  let ok = 0;
+  for (const f of files) {
+    try {
+      const id = await addImg(await fileToBlob(f, 1440));
+      S.posts.unshift({ id: uid(), imgs: [id], caption: '', done: false });   // новий допис — зверху, як в Instagram
+      ok++;
+    } catch { /* пропускаємо */ }
+  }
+  save(); renderAll();
+  toast(ok ? `Додано: ${ok}` : 'Не вдалося відкрити фото');
+}
+
+function openPost(id) {
+  const i = S.posts.findIndex(p => p.id === id); if (i < 0) return;
+  const p = S.posts[i];
+  const wasOpen = !$('#sheet').classList.contains('hide');
+  const html = `
+    <div class="slides ${p.imgs.length === 1 ? 'one' : ''}">${p.imgs.map(im => `<div class="slide"><img src="${urls[im] || ''}" alt="">${p.imgs.length > 1 ? `<button class="x" data-act="rmSlide" data-img="${im}">×</button>` : ''}</div>`).join('')}</div>
+    <div class="pos"><button class="btn" data-act="mv" data-d="-1" ${i === 0 ? 'disabled style="opacity:.4"' : ''}>← раніше</button><span>позиція ${i + 1} з ${S.posts.length}</span><button class="btn" data-act="mv" data-d="1" ${i === S.posts.length - 1 ? 'disabled style="opacity:.4"' : ''}>пізніше →</button></div>
+    <label class="f"><small>Підпис <span class="cnt" id="capCnt"></span></small><textarea id="cap" style="min-height:130px">${esc(p.caption)}</textarea></label>
+    <div style="display:flex;gap:6px"><button class="btn" data-act="addSlide">＋ Ще фото (карусель)</button><button class="btn danger" data-act="delPost">Видалити</button></div>`;
+  if (wasOpen) { const sh = $('.sheet'); const keep = sh.scrollTop; $('#sheet').innerHTML = `<div class="sheet"><div class="bar"><b>Допис</b><button data-act="closeSheet">Готово</button></div>${html}</div>`; $('.sheet').scrollTop = keep; }
+  else openSheet('Допис', html);
+  const sh = $('#sheet'); sh._post = p;
+  const cnt = () => { const c = $('#capCnt'); if (c) c.textContent = [...p.caption].length + '/2200'; };
+  cnt();
+  sh.oninput = e => { if (e.target.id === 'cap') { p.caption = e.target.value; cnt(); save(); } };
+}
+function movePost(d) {
+  const p = $('#sheet')._post, i = S.posts.indexOf(p), j = i + d;
+  if (j < 0 || j >= S.posts.length) return;
+  S.posts.splice(i, 1); S.posts.splice(j, 0, p);
+  save(); renderGrid(); openPost(p.id);
+}
+async function addSlide() {
+  const p = $('#sheet')._post;
+  const files = await pickFiles($('#fileIn'));
+  for (const f of files) { if (p.imgs.length >= 20) { toast('Максимум 20 фото'); break; } try { p.imgs.push(await addImg(await fileToBlob(f, 1440))); } catch {} }
+  save(); renderGrid(); openPost(p.id);
+}
+async function rmSlide(img) {
+  const p = $('#sheet')._post;
+  if (p.imgs.length < 2) return;
+  p.imgs = p.imgs.filter(x => x !== img); await dropImg(img);
+  save(); renderGrid(); openPost(p.id);
+}
+async function delPost() {
+  const p = $('#sheet')._post;
+  if (!confirm('Видалити цей допис?')) return;
+  for (const im of p.imgs) await dropImg(im);
+  S.posts = S.posts.filter(x => x !== p);
+  closeSheet();
+}
+
+/* ---------- reorder (drag & drop у сітці) ---------- */
+let drag = null;
+function startDrag(e) {
+  if (!reorder) return;
+  const cell = e.target.closest('.cell'); if (!cell) return;
+  e.preventDefault();
+  const r = cell.getBoundingClientRect();
+  const ghost = cell.cloneNode(true);
+  ghost.classList.add('ghost');
+  Object.assign(ghost.style, { width: r.width + 'px', height: r.height + 'px', left: r.left + 'px', top: r.top + 'px' });
+  document.body.appendChild(ghost);
+  cell.classList.add('ph');
+  drag = { cell, ghost, dx: e.clientX - r.left, dy: e.clientY - r.top, y: e.clientY };
+  try { $('#grid').setPointerCapture(e.pointerId); } catch {}
+}
+function moveDrag(e) {
+  if (!drag) return;
+  e.preventDefault();
+  drag.y = e.clientY;
+  drag.ghost.style.left = (e.clientX - drag.dx) + 'px';
+  drag.ghost.style.top = (e.clientY - drag.dy) + 'px';
+  const under = document.elementsFromPoint(e.clientX, e.clientY).find(el => el.classList.contains('cell') && el !== drag.cell && !el.classList.contains('ghost'));
+  if (under) {
+    const grid = under.parentNode, cells = [...grid.children];
+    const a = cells.indexOf(drag.cell), b = cells.indexOf(under);
+    grid.insertBefore(drag.cell, a < b ? under.nextSibling : under);
+  }
+}
+function endDrag() {
+  if (!drag) return;
+  const order = [...$('#grid .grid').children].map(c => c.dataset.id);
+  const map = Object.fromEntries(S.posts.map(p => [p.id, p]));
+  S.posts = order.map(id => map[id]);
+  drag.ghost.remove(); drag.cell.classList.remove('ph'); drag = null;
+  save(); renderGrid();
+}
+(function autoscroll() {
+  if (drag) { const h = innerHeight; if (drag.y < 110) scrollBy(0, -10); else if (drag.y > h - 110) scrollBy(0, 10); }
+  requestAnimationFrame(autoscroll);
+})();
+
+/* ---------- view: перенесення в Instagram ---------- */
+async function copyText(t) {
+  try { await navigator.clipboard.writeText(t); }
+  catch {
+    const a = document.createElement('textarea'); a.value = t; a.style.position = 'fixed'; a.style.opacity = 0;
+    document.body.appendChild(a); a.select(); a.setSelectionRange(0, 99999);
+    try { document.execCommand('copy'); } catch {} a.remove();
+  }
+  toast('Скопійовано ✓');
+}
+function download(blob, name) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000); }
+async function shareFiles(blobs, base) {
+  const files = blobs.map((b, i) => new File([b], `${base}${blobs.length > 1 ? '-' + (i + 1) : ''}.jpg`, { type: 'image/jpeg' }));
+  try {
+    if (navigator.canShare && navigator.canShare({ files })) { await navigator.share({ files }); return; }
+  } catch (e) { if (e.name === 'AbortError') return; }
+  files.forEach(f => download(f, f.name));
+  toast('Фото збережено у файли');
+}
+async function shareAvatar() {
+  const b = S.profile.avatar && await imgGet(S.profile.avatar);
+  if (!b) return toast('Спочатку додай фото профілю');
+  shareFiles([b], 'avatar');
+}
+async function sharePost(id) {
+  const p = S.posts.find(x => x.id === id); if (!p) return;
+  const blobs = []; for (const im of p.imgs) { const b = await imgGet(im); if (b) blobs.push(b); }
+  shareFiles(blobs, 'post-' + (S.posts.length - S.posts.indexOf(p)));
+}
+function renderMove() {
+  const p = S.profile;
+  const order = S.posts.slice().reverse();     // публікуємо від найстарішого (внизу сітки) до найновішого (зверху)
+  const left = order.filter(x => !x.done).length;
+  $('#v-move').innerHTML = `
+    <h2>1. Профіль</h2>
+    <p class="hint">Скопіюй текст і встав у «Редагувати профіль» в Instagram.</p>
+    <div class="card">
+      ${[['Ім’я користувача', p.username], ['Ім’я', p.name], ['Біо', p.bio], ['Посилання', p.link]].map(([l, v], i) =>
+        `<div class="field"><div><b>${l}</b><div class="v">${esc((v || '—').split('\n')[0])}</div></div><button class="btn" data-act="copyProf" data-i="${i}">Копіювати</button></div>`).join('')}
+      <div class="field"><div><b>Фото профілю</b></div><button class="btn" data-act="shareAv">Зберегти / надіслати</button></div>
+    </div>
+    <h2>2. Дописи по порядку</h2>
+    <p class="hint">Instagram показує найновіше зверху, тому викладати треба <b>знизу вгору</b>: спершу №1 (найнижчий у сітці), потім №2 і так далі — і сітка в реальному профілі стане такою ж, як тут.${order.length ? ` Залишилось: <b>${left}</b> з ${order.length}.` : ''}</p>
+    ${order.length ? order.map((x, i) => `
+      <div class="card step ${x.done ? 'done' : ''}">
+        <div class="th" style="background-image:url(${urls[x.imgs[0]] || ''})"></div>
+        <div class="tx">
+          <div class="t">№${i + 1}${x.imgs.length > 1 ? ` · ${x.imgs.length} фото` : ''}</div>
+          <div class="cap">${esc(x.caption) || '<i>без підпису</i>'}</div>
+          <div class="act">
+            <button class="btn" data-act="copyCap" data-id="${x.id}">Підпис</button>
+            <button class="btn" data-act="sharePost" data-id="${x.id}">Фото</button>
+            <button class="btn ${x.done ? 'on' : ''}" data-act="done" data-id="${x.id}">${x.done ? '✓ Опубліковано' : 'Опубліковано?'}</button>
+          </div>
+        </div>
+      </div>`).join('') : '<div class="card empty">Поки немає дописів.</div>'}
+    <h2>3. Резервна копія</h2>
+    <p class="hint">Усе зберігається тільки в цьому телефоні. Раз на деякий час зберігай копію — наприклад, у «Файли» чи iCloud — і можна відновити її на новому телефоні.</p>
+    <div class="btns"><button class="btn" data-act="backup">Зберегти копію</button><button class="btn" data-act="restore">Відновити з копії</button></div>`;
+}
+
+function blobToDataURL(b) { return new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(b); }); }
+async function backup() {
+  toast('Готую копію…');
+  const images = {};
+  for (const id of usedImgIds()) { const b = await imgGet(id); if (b) images[id] = await blobToDataURL(b); }
+  const blob = new Blob([JSON.stringify({ app: 'ig-editor', v: 1, state: S, images })], { type: 'application/json' });
+  const file = new File([blob], `instagram-maket-${new Date().toISOString().slice(0, 10)}.json`, { type: 'application/json' });
+  try { if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file] }); return; } }
+  catch (e) { if (e.name === 'AbortError') return; }
+  download(file, file.name);
+}
+async function restore() {
+  const [f] = await pickFiles($('#fileBackup')); if (!f) return;
+  try {
+    const d = JSON.parse(await f.text());
+    if (d.app !== 'ig-editor' || !d.state) throw 0;
+    if (!confirm('Замінити поточний макет копією з файлу?')) return;
+    for (const id of await imgKeys()) await dropImg(id);
+    for (const id of Object.keys(urls)) { URL.revokeObjectURL(urls[id]); delete urls[id]; }
+    for (const [id, data] of Object.entries(d.images || {})) { const b = await (await fetch(data)).blob(); await imgPut(id, b); urls[id] = URL.createObjectURL(b); }
+    S = Object.assign(blank(), d.state);
+    await kvSet('state', S); renderAll(); toast('Відновлено ✓');
+  } catch { toast('Це не схоже на файл копії'); }
+}
+
+/* ---------- events ---------- */
+function setTab(t) {
+  $('#v-feed').classList.toggle('hide', t !== 'feed');
+  $('#v-move').classList.toggle('hide', t !== 'move');
+  document.querySelectorAll('.nav button').forEach(b => b.classList.toggle('a', b.dataset.tab === t));
+  if (t === 'move') renderMove();
+  scrollTo(0, 0);
+}
+document.addEventListener('click', e => {
+  if (e.target.id === 'sheet') return closeSheet();
+  const cell = e.target.closest('.cell');
+  if (cell && !reorder && !cell.classList.contains('ghost')) return openPost(cell.dataset.id);
+  const el = e.target.closest('[data-act]'); if (!el) return;
+  const d = el.dataset, id = d.id;
+  switch (d.act) {
+    case 'tab': setTab(d.tab); break;
+    case 'editProfile': editProfile(); break;
+    case 'addPhotos': addPhotos(); break;
+    case 'toggleReorder': reorder = !reorder; renderGrid(); if (reorder) toast('Тримай фото й перетягуй'); break;
+    case 'closeSheet': closeSheet(); break;
+    case 'pickAvatar': pickAvatar(); break;
+    case 'editHl': editHl(id); break;
+    case 'pickCover': pickCover(); break;
+    case 'delHl': delHl(); break;
+    case 'mv': movePost(+d.d); break;
+    case 'addSlide': addSlide(); break;
+    case 'rmSlide': rmSlide(d.img); break;
+    case 'delPost': delPost(); break;
+    case 'copyProf': copyText([S.profile.username, S.profile.name, S.profile.bio, S.profile.link][+d.i] || ''); break;
+    case 'shareAv': shareAvatar(); break;
+    case 'copyCap': copyText((S.posts.find(x => x.id === id) || {}).caption || ''); break;
+    case 'sharePost': sharePost(id); break;
+    case 'done': { const p = S.posts.find(x => x.id === id); p.done = !p.done; save(); renderMove(); break; }
+    case 'backup': backup(); break;
+    case 'restore': restore(); break;
+  }
+});
+const gridEl = $('#grid');
+gridEl.addEventListener('pointerdown', startDrag);
+gridEl.addEventListener('pointermove', moveDrag);
+gridEl.addEventListener('pointerup', endDrag);
+gridEl.addEventListener('pointercancel', endDrag);
+
+/* ---------- init ---------- */
+(async function init() {
+  try {
+    const saved = await kvGet('state');
+    if (saved) S = Object.assign(blank(), saved);
+    for (const id of usedImgIds()) { const b = await imgGet(id); if (b) urls[id] = URL.createObjectURL(b); }
+    // прибрати «осиротілі» фото
+    const used = usedImgIds();
+    for (const k of await imgKeys()) if (!used.has(k)) await imgDel(k);
+    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+  } catch (e) {
+    toast('Сховище недоступне (приватний режим?)');
+  }
+  renderAll();
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+</script>
+</body>
+</html>
