@@ -82,7 +82,7 @@ input,textarea{font:inherit;color:var(--fg)}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
 .cell{position:relative;aspect-ratio:3/4;background:var(--soft) center/cover;overflow:hidden;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .grid.reels .cell{aspect-ratio:9/16}
-.cell img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.cell img,.cell video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .cell .car{position:absolute;top:6px;right:6px;width:20px;height:20px;filter:drop-shadow(0 0 2px rgba(0,0,0,.6))}
 .cell .pin{position:absolute;top:6px;left:6px;width:18px;height:18px;filter:drop-shadow(0 0 2px rgba(0,0,0,.6))}
 .cell .views{position:absolute;left:6px;bottom:6px;color:#fff;font-size:13px;font-weight:600;text-shadow:0 0 3px rgba(0,0,0,.7)}
@@ -109,7 +109,9 @@ h2:first-child{margin-top:0}
 .hint{color:var(--muted);font-size:14px;margin:0 0 12px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px}
 .step{display:flex;gap:10px;align-items:flex-start}
-.step .th{width:60px;aspect-ratio:3/4;border-radius:6px;background:var(--soft) center/cover;flex:none;position:relative}
+.step .th{width:60px;aspect-ratio:3/4;border-radius:6px;background:var(--soft);flex:none;position:relative;overflow:hidden}
+.step .th img,.step .th video,.srow .th img,.srow .th video,.hl .c img,.hl .c video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.hl .c img,.hl .c video{border-radius:50%}
 .step .tx{flex:1;min-width:0}
 .step .tx .cap{font-size:13px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:6px}
 .step .tx .t{font-weight:600}
@@ -141,14 +143,14 @@ label.f.chk input{width:auto;margin:0;transform:scale(1.25)}
 .slides::-webkit-scrollbar{display:none}
 .slide{flex:none;width:72%;scroll-snap-align:center;position:relative;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:var(--soft)}
 .slides.one .slide{width:100%}
-.slide img{width:100%;height:100%;object-fit:cover}
+.slide img,.slide video{width:100%;height:100%;object-fit:cover;display:block}
 .slide .x{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:18px;display:grid;place-items:center}
 .slide .play{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.65);color:#fff;border-radius:10px;padding:1px 8px;font-size:12px}
 .pos{display:flex;align-items:center;gap:8px;margin:8px 0}
 .pos span{flex:1;text-align:center;color:var(--muted)}
 .pos .btn{flex:none;width:96px}
 .srow{display:flex;align-items:center;gap:8px;margin:6px 0}
-.srow .th{width:42px;aspect-ratio:9/16;border-radius:6px;background:var(--soft) center/cover;flex:none;position:relative}
+.srow .th{width:42px;aspect-ratio:9/16;border-radius:6px;background:var(--soft);flex:none;position:relative;overflow:hidden}
 .srow .th i{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-style:normal;font-size:14px;text-shadow:0 0 3px #000}
 .srow input{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 10px;font-size:16px}
 .srow .x{width:32px;height:32px;border-radius:50%;background:var(--soft);display:grid;place-items:center;flex:none}
@@ -358,7 +360,8 @@ const blank = () => ({
   highlights: [],   // {id, title, cover, stories:[story]}
   posts: [],        // {id, imgs:[imgId], vids:{imgId:vidId}, caption, done, pinned, reel, views, likes, likedBy, comments, place, date}
   tagged: [],       // як posts, плюс owner
-  my: { stories: [] }   // мої сторіз; story = {id, img, vid, text, t}
+  my: { stories: [] },  // мої сторіз; story = {id, img, vid, text, t}
+  pf: {}                // стан обкладинок відео: imgId -> 'ok' | 'bad'
 });
 let ACC = { active: null, list: [] };
 let S = blank();
@@ -440,32 +443,68 @@ function fileToBlob(file, max, square = false, q = .88) {
     im.src = u;
   });
 }
-function videoPoster(file) {   // кадр із відео для обкладинки
-  return new Promise(res => {
-    const u = URL.createObjectURL(file), v = document.createElement('video');
-    let done = false, tm;
-    const finish = b => { if (done) return; done = true; clearTimeout(tm); v.removeAttribute('src'); v.load(); URL.revokeObjectURL(u); res(b); };
-    const fallback = () => { const c = document.createElement('canvas'); c.width = 540; c.height = 960; const g = c.getContext('2d'); g.fillStyle = '#222'; g.fillRect(0, 0, 540, 960); c.toBlob(b => finish(b), 'image/jpeg', .8); };
-    tm = setTimeout(fallback, 6000);
-    v.muted = true; v.playsInline = true; v.preload = 'auto'; v.setAttribute('playsinline', '');
-    v.onloadedmetadata = () => { try { v.currentTime = Math.min(0.3, (v.duration || 1) / 2); } catch { fallback(); } };
-    v.onseeked = () => {
-      const w = v.videoWidth, h = v.videoHeight; if (!w || !h) return fallback();
-      const k = Math.min(1, 1080 / Math.max(w, h)), c = document.createElement('canvas');
-      c.width = Math.round(w * k); c.height = Math.round(h * k);
-      c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
-      c.toBlob(b => b ? finish(b) : fallback(), 'image/jpeg', .85);
-    };
-    v.onerror = fallback;
-    v.src = u;
-  });
+const waitEv = (el, ev, ms) => new Promise(res => {
+  let t; const f = () => { clearTimeout(t); el.removeEventListener(ev, f); res(true); };
+  t = setTimeout(() => { el.removeEventListener(ev, f); res(false); }, ms);
+  el.addEventListener(ev, f);
+});
+const waitFrame = v => new Promise(res => {
+  const t = setTimeout(res, v.requestVideoFrameCallback ? 600 : 250);
+  if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(() => { clearTimeout(t); setTimeout(res, 30); });
+});
+function frameBlank(c) {   // чорний/порожній кадр? (iOS віддає такий, поки кадр не декодовано)
+  try {
+    const g = c.getContext('2d'); let sum = 0, sq = 0, n = 0;
+    for (let i = 1; i < 8; i++) for (let j = 1; j < 8; j++) {
+      const d = g.getImageData(Math.floor(c.width * i / 8), Math.floor(c.height * j / 8), 1, 1).data, l = (d[0] + d[1] + d[2]) / 3;
+      sum += l; sq += l * l; n++;
+    }
+    const m = sum / n; return m < 4 && (sq / n - m * m) < 4;
+  } catch { return false; }
+}
+async function videoPoster(file) {   // -> {blob, ok}: кадр із відео для обкладинки
+  const u = URL.createObjectURL(file), v = document.createElement('video');
+  v.muted = true; v.defaultMuted = true; v.playsInline = true; v.preload = 'auto';
+  v.setAttribute('playsinline', ''); v.setAttribute('muted', '');
+  v.style.cssText = 'position:fixed;left:0;top:0;width:64px;height:64px;opacity:.01;pointer-events:none;z-index:-1';
+  document.body.appendChild(v);   // у DOM, інакше Safari не декодує кадри
+  const grab = () => {
+    const w = v.videoWidth, h = v.videoHeight; if (!w || !h) return null;
+    const k = Math.min(1, 1080 / Math.max(w, h)), c = document.createElement('canvas');
+    c.width = Math.round(w * k); c.height = Math.round(h * k);
+    c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+    return c;
+  };
+  let out = null;
+  try {
+    v.src = u; v.load();
+    if (v.readyState < 1) await waitEv(v, 'loadedmetadata', 6000);
+    const dur = isFinite(v.duration) && v.duration > 0 ? v.duration : 1;
+    for (const t of [Math.min(.1, dur / 2), Math.min(.6, dur / 2), dur / 2]) {   // кілька спроб: перший кадр буває чорним
+      const sk = waitEv(v, 'seeked', 2500); v.currentTime = t; await sk; await waitFrame(v);
+      const c = grab(); if (c && !frameBlank(c)) { out = c; break; }
+    }
+    if (!out) {   // запасний спосіб: програти без звуку й зловити кадр
+      try { await v.play(); } catch {}
+      await waitEv(v, 'timeupdate', 2500); await waitFrame(v);
+      const c = grab(); if (c && !frameBlank(c)) out = c;
+      v.pause();
+    }
+  } catch {}
+  v.pause(); v.removeAttribute('src'); v.load(); v.remove(); URL.revokeObjectURL(u);
+  if (out) { const blob = await new Promise(r => out.toBlob(r, 'image/jpeg', .85)); if (blob) return { blob, ok: true }; }
+  const c = document.createElement('canvas'); c.width = 540; c.height = 960;
+  const g = c.getContext('2d'); g.fillStyle = '#222'; g.fillRect(0, 0, 540, 960);
+  return { blob: await new Promise(r => c.toBlob(r, 'image/jpeg', .8)), ok: false };
 }
 const isVideo = f => (f.type || '').startsWith('video/') || /\.(mov|mp4|m4v|webm)$/i.test(f.name || '');
 async function fileToMedia(file, max = 1440) {   // -> {img, vid|null}
   if (isVideo(file)) {
     if (file.size > 500e6) throw new Error('big');
-    const img = await addImg(await videoPoster(file));
+    const r = await videoPoster(file);
+    const img = await addImg(r.blob);
     const vid = await addImg(file);
+    S.pf = S.pf || {}; S.pf[img] = r.ok ? 'ok' : 'bad';
     return { img, vid };
   }
   return { img: await addImg(await fileToBlob(file, max)), vid: null };
@@ -492,6 +531,38 @@ const IC = {
   save: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6 3h12v18l-6-4.500L6 21z"/></svg>',
   more: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>'
 };
+const isBadPoster = im => !!(S.pf && S.pf[im] === 'bad');
+const vurl = (im, vid) => urls[vid] + (isBadPoster(im) ? '#t=0.001' : '');       // #t — iOS показує перший кадр без обкладинки
+const vposter = im => isBadPoster(im) ? '' : ` poster="${urls[im] || ''}"`;
+function mediaThumb(im, vid) {   // мініатюра: обкладинка або (якщо вона не вдалась) перший кадр самого відео
+  if (vid && urls[vid] && isBadPoster(im)) return `<video src="${urls[vid]}#t=0.001" muted playsinline preload="metadata" tabindex="-1"></video>`;
+  return urls[im] ? `<img src="${urls[im]}" alt="">` : '';
+}
+function mediaPairs(st) {
+  const out = [];
+  [...st.posts, ...st.tagged].forEach(p => Object.entries(p.vids || {}).forEach(([im, vid]) => out.push([im, vid])));
+  [...st.highlights, st.my].forEach(set => (set.stories || []).forEach(x => { if (x.vid) out.push([x.img, x.vid]); }));
+  return out;
+}
+let fixing = false;
+async function fixPosters() {   // перестворити обкладинки відео, які раніше вийшли чорними
+  if (fixing) return; fixing = true;
+  try {
+    const st = S; st.pf = st.pf || {};
+    const todo = mediaPairs(st).filter(([im]) => !st.pf[im]);
+    let changed = false;
+    for (const [im, vid] of todo) {
+      if (S !== st) return;
+      const vb = await imgGet(vid);
+      if (!vb) { st.pf[im] = 'bad'; changed = true; continue; }
+      const r = await videoPoster(vb);
+      if (r.ok) { await imgPut(im, r.blob); if (urls[im]) URL.revokeObjectURL(urls[im]); urls[im] = URL.createObjectURL(r.blob); st.pf[im] = 'ok'; }
+      else st.pf[im] = 'bad';
+      changed = true;
+    }
+    if (changed && S === st) { save(); renderAll(); }
+  } finally { fixing = false; }
+}
 const avStyle = id => id && urls[id] ? `background-image:url(${urls[id]})` : '';
 const vidOf = x => (x.imgs || []).find(i => x.vids && x.vids[i] && urls[x.vids[i]]);
 
@@ -520,7 +591,7 @@ function renderProfile() {
   $('#pro').classList.toggle('hide', !p.pro);
   $('#proViews').textContent = (p.views || '0') + ' переглядів за останні 30 днів';
   $('#hl').innerHTML =
-    S.highlights.map(h => { const cov = h.cover || ((h.stories || [])[0] || {}).img; return `<button data-act="hlTap" data-id="${h.id}"><div class="c" style="${cov && urls[cov] ? `background-image:url(${urls[cov]})` : ''}">${cov ? '' : '★'}</div><span>${esc(h.title || ' ')}</span></button>`; }).join('') +
+    S.highlights.map(h => { const s0 = (h.stories || [])[0] || {}, cov = h.cover || s0.img; return `<button data-act="hlTap" data-id="${h.id}"><div class="c">${cov && urls[cov] ? mediaThumb(cov, h.cover ? null : s0.vid) : '★'}</div><span>${esc(h.title || ' ')}</span></button>`; }).join('') +
     `<button data-act="hlTap" data-id=""><div class="c">＋</div><span>Створити</span></button>`;
 }
 const EMPTY = {
@@ -541,7 +612,7 @@ function renderGrid() {
     let mark = '';
     if (ptab === 'reels') mark = `<span class="views">▶ ${esc(p.views || '0')}</span>`;
     else mark = (ptab === 'grid' && p.pinned ? ICON_PIN : '') + (p.reel ? ICON_REEL : p.imgs.length > 1 ? ICON_CAROUSEL : '');
-    return `<div class="cell" data-id="${p.id}"><img src="${urls[p.imgs[0]] || ''}" alt="" draggable="false">${mark}</div>`;
+    return `<div class="cell" data-id="${p.id}">${mediaThumb(p.imgs[0], p.vids && p.vids[p.imgs[0]])}${mark}</div>`;
   }).join('') + '</div>';
 }
 function renderAll() {
@@ -566,7 +637,7 @@ let vlist = 'posts';
 const curList = () => vlist === 'tagged' ? S.tagged : S.posts;
 function slideHtml(x, im) {
   if (x.vids && x.vids[im] && urls[x.vids[im]])
-    return `<div class="fslide" data-act="toggleMute"><video src="${urls[x.vids[im]]}" poster="${urls[im] || ''}" playsinline muted loop preload="metadata"></video><span class="mute">🔇</span></div>`;
+    return `<div class="fslide" data-act="toggleMute"><video src="${vurl(im, x.vids[im])}"${vposter(im)} playsinline muted loop preload="metadata"></video><span class="mute">🔇</span></div>`;
   return `<div class="fslide"><img src="${urls[im] || ''}" alt=""></div>`;
 }
 function likesHtml(x) {
@@ -624,7 +695,7 @@ function renderReels() {
   rl.innerHTML = list.map(x => {
     const vi = vidOf(x);
     return `<section class="rl" data-id="${x.id}">
-      <div class="rmedia" data-act="rtap">${vi ? `<video src="${urls[x.vids[vi]]}" poster="${urls[vi] || ''}" playsinline loop ${rMuted ? 'muted' : ''}></video>` : `<img src="${urls[x.imgs[0]] || ''}" alt="">`}</div>
+      <div class="rmedia" data-act="rtap">${vi ? `<video src="${vurl(vi, x.vids[vi])}"${vposter(vi)} playsinline loop ${rMuted ? 'muted' : ''}></video>` : `<img src="${urls[x.imgs[0]] || ''}" alt="">`}</div>
       <div class="rside">
         <button data-act="like">${IC.heart}<span>${esc(x.likes || '')}</span></button>
         <button data-act="fake">${IC.comment}<span>${esc(x.comments || '')}</span></button>
@@ -657,7 +728,7 @@ function showStory() {
   SV.elapsed = 0; SV.dur = 5000; SV.v = null; SV.last = 0;
   const hasV = s.vid && urls[s.vid];
   $('#sviewer').innerHTML = `<div class="sv">
-    <div class="smedia">${hasV ? `<video src="${urls[s.vid]}" poster="${urls[s.img] || ''}" playsinline></video>` : `<img src="${urls[s.img] || ''}" alt="">`}</div>
+    <div class="smedia">${hasV ? `<video src="${vurl(s.img, s.vid)}"${vposter(s.img)} playsinline></video>` : `<img src="${urls[s.img] || ''}" alt="">`}</div>
     ${s.text ? `<div class="stext">${esc(s.text)}</div>` : ''}
     <div class="sbars">${SV.set.stories.map((_, k) => `<i><b style="width:${k < SV.i ? 100 : 0}%"></b></i>`).join('')}</div>
     <div class="shead"><div class="avatar" style="${avStyle(p.avatar)}"></div><b>${esc(p.username)}</b><small>${SV.title ? esc(SV.title) : ago(s.t)}</small><span class="grow"></span>
@@ -756,7 +827,7 @@ async function pickAvatar() {
 
 /* --- сторіз: редагування наборів (актуальне / мої сторіз) --- */
 const storyRowsHtml = set => (set.stories || []).map(s =>
-  `<div class="srow"><div class="th" style="background-image:url(${urls[s.img] || ''})">${s.vid ? '<i>▶</i>' : ''}</div><input data-sid="${s.id}" placeholder="Текст на сторіз (необов’язково)" value="${esc(s.text || '')}"><button class="x" data-act="rmStory" data-sid="${s.id}" aria-label="Видалити">✕</button></div>`).join('')
+  `<div class="srow"><div class="th">${mediaThumb(s.img, s.vid)}${s.vid ? '<i>▶</i>' : ''}</div><input data-sid="${s.id}" placeholder="Текст на сторіз (необов’язково)" value="${esc(s.text || '')}"><button class="x" data-act="rmStory" data-sid="${s.id}" aria-label="Видалити">✕</button></div>`).join('')
   || '<p class="hint">Поки порожньо.</p>';
 function editMyStories() {
   openSheet('Мої сторіз', `<p class="hint">Тап на фото профілю відкриє ці сторіз, навколо фото з’явиться кільце.</p><div id="stRows">${storyRowsHtml(S.my)}</div>
@@ -854,7 +925,7 @@ async function switchTo(id) {
   S = await loadState(id); ACC.active = id; await kvSet('accounts', ACC);
   resetUrls(); await loadUrls(S);
   ptab = 'grid'; reorder = false;
-  renderAll(); scrollTo(0, 0);
+  renderAll(); scrollTo(0, 0); fixPosters();
 }
 async function newAccount() {
   const id = uid(), st = blank();
@@ -910,7 +981,7 @@ function openPost(id) {
   const { p, tagged } = f, list = tagged ? S.tagged : S.posts, i = list.indexOf(p);
   const wasOpen = sheetOpen() && $('#sheet')._post;
   const html = `
-    <div class="slides ${p.imgs.length === 1 ? 'one' : ''}">${p.imgs.map(im => `<div class="slide"><img src="${urls[im] || ''}" alt="">${p.vids && p.vids[im] ? '<span class="play">▶ відео</span>' : ''}${p.imgs.length > 1 ? `<button class="x" data-act="rmSlide" data-img="${im}">×</button>` : ''}</div>`).join('')}</div>
+    <div class="slides ${p.imgs.length === 1 ? 'one' : ''}">${p.imgs.map(im => `<div class="slide">${mediaThumb(im, p.vids && p.vids[im])}${p.vids && p.vids[im] ? '<span class="play">▶ відео</span>' : ''}${p.imgs.length > 1 ? `<button class="x" data-act="rmSlide" data-img="${im}">×</button>` : ''}</div>`).join('')}</div>
     ${tagged ? '' : `<div class="pos"><button class="btn" data-act="mv" data-d="-1" ${i === 0 ? 'disabled style="opacity:.4"' : ''}>← раніше</button><span>позиція ${i + 1} з ${list.length}</span><button class="btn" data-act="mv" data-d="1" ${i === list.length - 1 ? 'disabled style="opacity:.4"' : ''}>пізніше →</button></div>`}
     ${tagged ? `<label class="f"><small>Хто опублікував (нік)</small><input data-pk="owner" value="${esc(p.owner || '')}"></label>` : ''}
     <label class="f"><small>Підпис <span class="cnt" id="capCnt"></span></small><textarea id="cap" style="min-height:120px">${esc(p.caption)}</textarea></label>
@@ -1064,7 +1135,7 @@ function renderMove() {
     <p class="hint">Instagram показує найновіше зверху, тому викладати треба <b>знизу вгору</b>: спершу №1 (найнижчий у сітці), потім №2 і так далі — і сітка в реальному профілі стане такою ж, як тут.${order.length ? ` Залишилось: <b>${left}</b> з ${order.length}.` : ''}</p>
     ${order.length ? order.map((x, i) => `
       <div class="card step ${x.done ? 'done' : ''}">
-        <div class="th" style="background-image:url(${urls[x.imgs[0]] || ''})"></div>
+        <div class="th">${mediaThumb(x.imgs[0], x.vids && x.vids[x.imgs[0]])}</div>
         <div class="tx">
           <div class="t">№${i + 1}${x.reel ? ' · Reel' : ''}${x.imgs.length > 1 ? ` · ${x.imgs.length} шт.` : ''}${x.pinned ? ' · 📌 потім закріпити' : ''}</div>
           <div class="cap">${esc(x.caption) || '<i>без підпису</i>'}</div>
@@ -1125,7 +1196,7 @@ async function restore() {
     await kvSet('accounts', ACC);
     closeAllOverlays();
     S = await loadState(ACC.active); resetUrls(); await loadUrls(S); ptab = 'grid';
-    renderAll(); toast('Відновлено ✓');
+    renderAll(); toast('Відновлено ✓'); fixPosters();
   } catch { toast('Це не схоже на файл копії'); }
 }
 
@@ -1229,7 +1300,7 @@ gridEl.addEventListener('pointercancel', endDrag);
   } catch (e) {
     toast('Сховище недоступне (приватний режим?)');
   }
-  renderAll();
+  renderAll(); fixPosters();
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
 })();
 </script>
