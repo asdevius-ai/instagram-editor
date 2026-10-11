@@ -320,6 +320,8 @@ label.f.chk input{width:auto;margin:0;transform:scale(1.25)}
 
 <script>
 'use strict';
+const APP_VERSION = '2.1 · 11.10.2026';   // збільшуй при кожному оновленні, щоб було видно, що телефон отримав нову версію
+
 /* ---------- helpers ---------- */
 const $ = (s, r = document) => r.querySelector(s);
 const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
@@ -1151,7 +1153,18 @@ function renderMove() {
     ${sets.length ? `<div class="card">${sets.map(s => `<div class="field"><div><b>${esc(s.t)}</b><div class="v">${s.n} шт.</div></div><button class="btn" data-act="shareSet" data-k="${s.k}">Зберегти</button></div>`).join('')}</div>` : '<div class="card empty">Сторіз ще немає.</div>'}
     <h2>4. Резервна копія</h2>
     <p class="hint">Усе зберігається тільки в цьому телефоні. Зберігай копію (наприклад, у «Файли» чи iCloud) — її можна відновити на новому телефоні. У копію входять усі акаунти, фото й обкладинки відео, <b>самі відео не входять</b> (вони завеликі) — їх збережи окремо через «Фото/відео» вище.</p>
-    <div class="btns"><button class="btn" data-act="backup">Зберегти копію</button><button class="btn" data-act="restore">Відновити з копії</button></div>`;
+    <div class="btns"><button class="btn" data-act="backup">Зберегти копію</button><button class="btn" data-act="restore">Відновити з копії</button></div>
+    <p class="hint" style="text-align:center;margin-top:28px">Версія програми: <b>${APP_VERSION}</b></p>
+    <div class="btns"><button class="btn" data-act="forceUpdate">Перевірити оновлення</button></div>
+    <p class="hint" style="text-align:center">Ваші фото й дані при цьому не зачіпаються.</p>`;
+}
+async function forceUpdate() {   // скидає кеш програми й перезавантажує свіжу версію (дані в IndexedDB не чіпає)
+  toast('Оновлюю…');
+  try {
+    if ('serviceWorker' in navigator) for (const r of await navigator.serviceWorker.getRegistrations()) await r.unregister();
+    if (window.caches) for (const k of await caches.keys()) await caches.delete(k);
+  } catch {}
+  location.replace(location.pathname + '?u=' + Date.now());
 }
 
 function blobToDataURL(b) { return new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(b); }); }
@@ -1267,6 +1280,7 @@ document.addEventListener('click', e => {
     case 'sharePost': sharePost(id); break;
     case 'shareSet': shareSet(d.k); break;
     case 'done': { const p = S.posts.find(x => x.id === id); p.done = !p.done; save(); renderMove(); break; }
+    case 'forceUpdate': forceUpdate(); break;
     case 'backup': backup(); break;
     case 'restore': restore(); break;
   }
