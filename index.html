@@ -162,8 +162,8 @@ label.f.chk input{width:auto;margin:0;transform:scale(1.25)}
 .acc .x{width:32px;height:32px;display:grid;place-items:center;color:var(--danger)}
 
 /* feed viewer */
-#viewer{position:fixed;inset:0;z-index:15;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-#viewer .vwrap{max-width:560px;margin:0 auto;padding-bottom:calc(30px + var(--safe-b))}
+#viewer,#archive{position:fixed;inset:0;z-index:15;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#viewer .vwrap,#archive .vwrap{max-width:560px;margin:0 auto;padding-bottom:calc(30px + var(--safe-b))}
 .vtop{position:sticky;top:0;z-index:2;background:var(--bg);display:flex;align-items:center;gap:12px;padding:calc(8px + var(--safe-t)) 12px 8px;border-bottom:1px solid var(--line)}
 .vtop .ic{width:28px;height:28px;display:grid;place-items:center}
 .vtop .ic svg{width:26px;height:26px}
@@ -206,6 +206,17 @@ label.f.chk input{width:auto;margin:0;transform:scale(1.25)}
 .fc .more{color:var(--muted);font-size:14px}
 .cm{color:var(--muted);font-size:14px;margin-top:4px}
 .dt{color:var(--muted);font-size:11px;margin-top:4px}
+
+.cell .ck{position:absolute;right:6px;bottom:6px;width:22px;height:22px;border-radius:50%;border:2px solid #fff;background:rgba(0,0,0,.3);color:#fff;font-size:13px;line-height:18px;text-align:center;font-weight:700}
+.cell.sel .ck{background:var(--accent);border-color:var(--accent)}
+.cell.sel img,.cell.sel video{opacity:.6}
+body.selecting{padding-bottom:calc(128px + var(--safe-b))}
+#selbar{position:fixed;left:0;right:0;bottom:calc(56px + var(--safe-b));z-index:7;background:var(--bg);border-top:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:8px 16px;box-shadow:0 -4px 12px rgba(0,0,0,.08)}
+#selbar span{flex:1;font-weight:600}
+#selbar .btn{flex:none;padding:8px 14px}
+.menu .row{display:flex;align-items:center;gap:12px;padding:14px 4px;border-bottom:1px solid var(--line);cursor:pointer;font-size:16px}
+.menu .row b{flex:1;font-weight:500}
+.menu .row small{color:var(--muted)}
 
 /* reels viewer */
 #rviewer{position:fixed;inset:0;z-index:16;background:#000;color:#fff}
@@ -257,12 +268,13 @@ label.f.chk input{width:auto;margin:0;transform:scale(1.25)}
     <div class="top">
       <span class="un" data-act="accounts"><span id="topname"></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
       <button class="ic" data-act="addMedia" aria-label="Додати"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M12 8v8M8 12h8"/></svg></button>
-      <button class="ic" data-act="fake" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <button class="ic" data-act="menu" aria-label="Меню"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
     </div>
     <div class="editor" id="editor">
       <span>Редактор:</span>
       <button class="chip" data-act="addMedia" id="btnAdd">＋ Фото/відео</button>
       <button class="chip" data-act="toggleReorder" id="btnReorder">↕ Порядок</button>
+      <button class="chip" data-act="toggleSel" id="btnSel">☑ Вибрати</button>
       <button class="chip" data-act="toggleClean">👁 Чистий вигляд</button>
     </div>
     <div class="prof">
@@ -306,6 +318,12 @@ label.f.chk input{width:auto;margin:0;transform:scale(1.25)}
   <div class="vtop"><button class="ic" data-act="closeViewer" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg></button><div><small id="vuser"></small><b>Дописи</b></div></div>
   <div id="vlist"></div>
 </div></div>
+<div id="archive" class="hide"><div class="vwrap">
+  <div class="vtop"><button class="ic" data-act="closeArchive" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg></button><div><small id="acount"></small><b>Архів</b></div></div>
+  <p class="hint" style="padding:12px 16px 0">Тут дописи, яких не видно в профілі. Тап по допису → «Повернути в профіль».</p>
+  <div id="alist"></div>
+</div></div>
+<div id="selbar" class="hide"><span id="selcnt"></span><button class="btn primary" data-act="archiveSel">📦 В архів</button><button class="btn" data-act="cancelSel">Скасувати</button></div>
 <div id="rviewer" class="hide">
   <div class="rtop"><button class="ic" data-act="closeReels" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"/></svg></button><span class="grow">Reels</span><button class="ic" data-act="rmute" id="rmuteBtn" aria-label="Звук">🔇</button></div>
   <div id="rlist"></div>
@@ -320,7 +338,7 @@ label.f.chk input{width:auto;margin:0;transform:scale(1.25)}
 
 <script>
 'use strict';
-const APP_VERSION = '2.1 · 11.10.2026';   // збільшуй при кожному оновленні, щоб було видно, що телефон отримав нову версію
+const APP_VERSION = '2.2 · 19.10.2026';   // збільшуй при кожному оновленні, щоб було видно, що телефон отримав нову версію
 
 /* ---------- helpers ---------- */
 const $ = (s, r = document) => r.querySelector(s);
@@ -363,12 +381,14 @@ const blank = () => ({
   posts: [],        // {id, imgs:[imgId], vids:{imgId:vidId}, caption, done, pinned, reel, views, likes, likedBy, comments, place, date}
   tagged: [],       // як posts, плюс owner
   my: { stories: [] },  // мої сторіз; story = {id, img, vid, text, t}
+  archive: [],          // архівовані дописи (не видно в профілі), як posts + fromIdx
   pf: {}                // стан обкладинок відео: imgId -> 'ok' | 'bad'
 });
 let ACC = { active: null, list: [] };
 let S = blank();
 const urls = {};                 // id -> objectURL
 let reorder = false, ptab = 'grid', saveT;
+let selMode = false; const sel = new Set();
 
 const stateKey = id => 'state:' + id;
 async function loadState(id) { return Object.assign(blank(), (await kvGet(stateKey(id))) || {}); }
@@ -406,7 +426,7 @@ function idsOf(st) {
   const stories = set => (set.stories || []).forEach(x => { add(x.img); add(x.vid); });
   (st.highlights || []).forEach(h => { add(h.cover); stories(h); });
   stories(st.my || {});
-  [...(st.posts || []), ...(st.tagged || [])].forEach(p => { (p.imgs || []).forEach(add); Object.values(p.vids || {}).forEach(add); });
+  [...(st.posts || []), ...(st.tagged || []), ...(st.archive || [])].forEach(p => { (p.imgs || []).forEach(add); Object.values(p.vids || {}).forEach(add); });
   return s;
 }
 
@@ -542,7 +562,7 @@ function mediaThumb(im, vid) {   // мініатюра: обкладинка а�
 }
 function mediaPairs(st) {
   const out = [];
-  [...st.posts, ...st.tagged].forEach(p => Object.entries(p.vids || {}).forEach(([im, vid]) => out.push([im, vid])));
+  [...st.posts, ...st.tagged, ...(st.archive || [])].forEach(p => Object.entries(p.vids || {}).forEach(([im, vid]) => out.push([im, vid])));
   [...st.highlights, st.my].forEach(set => (set.stories || []).forEach(x => { if (x.vid) out.push([x.img, x.vid]); }));
   return out;
 }
@@ -573,7 +593,8 @@ const viewerOpen = () => !$('#viewer').classList.contains('hide');
 const reelsOpen = () => !$('#rviewer').classList.contains('hide');
 const storiesOpen = () => !$('#sviewer').classList.contains('hide');
 const sheetOpen = () => !$('#sheet').classList.contains('hide');
-function syncLock() { document.body.style.overflow = (viewerOpen() || reelsOpen() || storiesOpen() || sheetOpen()) ? 'hidden' : ''; }
+const archiveOpen = () => !$('#archive').classList.contains('hide');
+function syncLock() { document.body.style.overflow = (viewerOpen() || reelsOpen() || storiesOpen() || sheetOpen() || archiveOpen()) ? 'hidden' : ''; }
 
 /* ---------- render: profile / grid ---------- */
 function renderProfile() {
@@ -608,19 +629,24 @@ function renderGrid() {
   g.className = reorder && ptab === 'grid' ? 'reorder' : '';
   $('#btnReorder').classList.toggle('on', reorder);
   $('#btnReorder').textContent = reorder ? '✓ Готово' : '↕ Порядок';
+  $('#btnSel').classList.toggle('on', selMode);
+  $('#selbar').classList.toggle('hide', !selMode);
+  document.body.classList.toggle('selecting', selMode);
+  $('#selcnt').textContent = sel.size ? `Вибрано: ${sel.size}` : 'Тапни фото, які треба прибрати';
   const list = ptab === 'grid' ? S.posts : ptab === 'reels' ? S.posts.filter(p => p.reel) : S.tagged;
   if (!list.length) { g.innerHTML = `<div class="empty"><b>${EMPTY[ptab][0]}</b>${EMPTY[ptab][1]}</div>`; return; }
   g.innerHTML = `<div class="grid ${ptab === 'reels' ? 'reels' : ''}">` + list.map(p => {
     let mark = '';
     if (ptab === 'reels') mark = `<span class="views">▶ ${esc(p.views || '0')}</span>`;
     else mark = (ptab === 'grid' && p.pinned ? ICON_PIN : '') + (p.reel ? ICON_REEL : p.imgs.length > 1 ? ICON_CAROUSEL : '');
-    return `<div class="cell" data-id="${p.id}">${mediaThumb(p.imgs[0], p.vids && p.vids[p.imgs[0]])}${mark}</div>`;
+    return `<div class="cell ${selMode && sel.has(p.id) ? 'sel' : ''}" data-id="${p.id}">${mediaThumb(p.imgs[0], p.vids && p.vids[p.imgs[0]])}${mark}${selMode ? `<span class="ck">${sel.has(p.id) ? '✓' : ''}</span>` : ''}</div>`;
   }).join('') + '</div>';
 }
 function renderAll() {
   renderProfile(); renderGrid();
   if (viewerOpen()) renderViewer();
   if (reelsOpen()) renderReels();
+  if (archiveOpen()) renderArchive();
   if (!$('#v-move').classList.contains('hide')) renderMove();
 }
 
@@ -921,7 +947,7 @@ async function openAccounts() {
     <p class="hint" style="margin-top:12px">Кожен акаунт — окремий макет зі своїми фото, сторіз і дописами. Усе зберігається в цьому телефоні.</p>`,
   () => tmp.forEach(u => URL.revokeObjectURL(u)));
 }
-function closeAllOverlays() { closeViewer(); closeReels(); closeStories(); }
+function closeAllOverlays() { closeViewer(); closeReels(); closeStories(); closeArchive(); cancelSel(); }
 async function switchTo(id) {
   await flushSave(); closeAllOverlays();
   S = await loadState(id); ACC.active = id; await kvSet('accounts', ACC);
@@ -975,16 +1001,19 @@ async function addMedia() {
   toast(big ? 'Відео більше 500 МБ не додаю' : ok ? `Додано: ${ok}` : 'Не вдалося відкрити файл');
 }
 function findPost(id) {
-  let p = S.posts.find(x => x.id === id); if (p) return { p, tagged: false };
-  p = S.tagged.find(x => x.id === id); return p ? { p, tagged: true } : null;
+  let p = S.posts.find(x => x.id === id); if (p) return { p, kind: 'post' };
+  p = S.tagged.find(x => x.id === id); if (p) return { p, kind: 'tagged' };
+  p = S.archive.find(x => x.id === id); return p ? { p, kind: 'archive' } : null;
 }
 function openPost(id) {
   const f = findPost(id); if (!f) return;
-  const { p, tagged } = f, list = tagged ? S.tagged : S.posts, i = list.indexOf(p);
+  const { p, kind } = f, tagged = kind === 'tagged', archived = kind === 'archive', plain = kind === 'post';
+  const list = tagged ? S.tagged : archived ? S.archive : S.posts, i = list.indexOf(p);
   const wasOpen = sheetOpen() && $('#sheet')._post;
   const html = `
     <div class="slides ${p.imgs.length === 1 ? 'one' : ''}">${p.imgs.map(im => `<div class="slide">${mediaThumb(im, p.vids && p.vids[im])}${p.vids && p.vids[im] ? '<span class="play">▶ відео</span>' : ''}${p.imgs.length > 1 ? `<button class="x" data-act="rmSlide" data-img="${im}">×</button>` : ''}</div>`).join('')}</div>
-    ${tagged ? '' : `<div class="pos"><button class="btn" data-act="mv" data-d="-1" ${i === 0 ? 'disabled style="opacity:.4"' : ''}>← раніше</button><span>позиція ${i + 1} з ${list.length}</span><button class="btn" data-act="mv" data-d="1" ${i === list.length - 1 ? 'disabled style="opacity:.4"' : ''}>пізніше →</button></div>`}
+    ${archived ? '<p class="hint">Цей допис в архіві: його не видно в профілі.</p><button class="btn primary" data-act="restorePost" style="width:100%;margin-bottom:8px">↩ Повернути в профіль</button>' : ''}
+    ${plain ? `<div class="pos"><button class="btn" data-act="mv" data-d="-1" ${i === 0 ? 'disabled style="opacity:.4"' : ''}>← раніше</button><span>позиція ${i + 1} з ${list.length}</span><button class="btn" data-act="mv" data-d="1" ${i === list.length - 1 ? 'disabled style="opacity:.4"' : ''}>пізніше →</button></div>` : ''}
     ${tagged ? `<label class="f"><small>Хто опублікував (нік)</small><input data-pk="owner" value="${esc(p.owner || '')}"></label>` : ''}
     <label class="f"><small>Підпис <span class="cnt" id="capCnt"></span></small><textarea id="cap" style="min-height:120px">${esc(p.caption)}</textarea></label>
     <label class="f"><small>Місце (геотег)</small><input data-pk="place" value="${esc(p.place || '')}"></label>
@@ -992,9 +1021,10 @@ function openPost(id) {
     <label class="f"><small>Хто вподобав (нік) — рядок «Вподобали X та ще N»</small><input data-pk="likedBy" value="${esc(p.likedBy || '')}"></label>
     <label class="f"><small>Дата</small><input type="date" data-pk="date" value="${esc(p.date || '')}"></label>
     ${tagged ? '' : `<label class="f chk"><input type="checkbox" data-pk="reel" ${p.reel ? 'checked' : ''}> Це Reel (показувати у вкладці Reels)</label>
-    <label class="f"><small>Перегляди Reel (напр. 12,5 тис.)</small><input data-pk="views" value="${esc(p.views || '')}"></label>
-    <label class="f chk"><input type="checkbox" data-pk="pinned" ${p.pinned ? 'checked' : ''}> Закріпити в профілі (до 3)</label>`}
-    <div style="display:flex;gap:6px;margin-top:6px"><button class="btn" data-act="addSlide">＋ Ще фото/відео (карусель)</button><button class="btn danger" data-act="delPost">Видалити</button></div>`;
+    <label class="f"><small>Перегляди Reel (напр. 12,5 тис.)</small><input data-pk="views" value="${esc(p.views || '')}"></label>`}
+    ${plain ? `<label class="f chk"><input type="checkbox" data-pk="pinned" ${p.pinned ? 'checked' : ''}> Закріпити в профілі (до 3)</label>` : ''}
+    <div style="display:flex;gap:6px;margin-top:6px"><button class="btn" data-act="addSlide">＋ Ще фото/відео (карусель)</button></div>
+    <div style="display:flex;gap:6px;margin-top:6px">${plain ? '<button class="btn" data-act="archivePost">📦 В архів</button>' : ''}<button class="btn danger" data-act="delPost">Видалити назовсім</button></div>`;
   if (wasOpen) { const keep = $('.sheet').scrollTop; $('#sheet').innerHTML = `<div class="sheet"><div class="bar"><b>Допис</b><button data-act="closeSheet">Готово</button></div>${html}</div>`; $('.sheet').scrollTop = keep; }
   else openSheet('Допис', html);
   const sh = $('#sheet'); sh._post = p;
@@ -1037,8 +1067,50 @@ async function delPost() {
   const p = $('#sheet')._post;
   if (!confirm('Видалити цей допис?')) return;
   await dropPostMedia(p);
-  S.posts = S.posts.filter(x => x !== p); S.tagged = S.tagged.filter(x => x !== p);
+  S.posts = S.posts.filter(x => x !== p); S.tagged = S.tagged.filter(x => x !== p); S.archive = S.archive.filter(x => x !== p);
   closeSheet();
+}
+
+/* ---------- архів ---------- */
+function toArchive(posts) {   // прибирає дописи з профілю в архів, нічого не видаляючи
+  const keep = new Set(posts);
+  posts.forEach(p => { p.fromIdx = S.posts.indexOf(p); p.pinned = false; });
+  S.posts = S.posts.filter(p => !keep.has(p));
+  S.archive.unshift(...posts);
+}
+function archivePost() {
+  const p = $('#sheet')._post; if (!p || !S.posts.includes(p)) return;
+  toArchive([p]); save();
+  closeSheet(); toast('Перенесено в архів 📦');
+}
+function restorePost() {
+  const p = $('#sheet')._post; if (!p || !S.archive.includes(p)) return;
+  S.archive = S.archive.filter(x => x !== p);
+  S.posts.splice(Math.min(p.fromIdx || 0, S.posts.length), 0, p); delete p.fromIdx;
+  normalize(); save(); closeSheet(); toast('Повернено в профіль ✓');
+}
+function toggleSel() {
+  if (ptab === 'tagged') return toast('Вибір працює в сітці й Reels');
+  selMode = !selMode; sel.clear(); reorder = false; renderGrid();
+}
+function cancelSel() { if (!selMode && !sel.size) return; selMode = false; sel.clear(); renderGrid(); }
+function archiveSel() {
+  if (!sel.size) return toast('Спочатку вибери фото');
+  const picked = S.posts.filter(p => sel.has(p.id)), n = picked.length;
+  toArchive(picked); selMode = false; sel.clear(); save(); renderAll();
+  toast(`В архів: ${n} 📦`);
+}
+function renderArchive() {
+  $('#acount').textContent = S.archive.length ? S.archive.length + ' шт.' : '';
+  $('#alist').innerHTML = S.archive.length
+    ? '<div class="grid">' + S.archive.map(p => `<div class="cell" data-id="${p.id}">${mediaThumb(p.imgs[0], p.vids && p.vids[p.imgs[0]])}${p.reel ? ICON_REEL : p.imgs.length > 1 ? ICON_CAROUSEL : ''}</div>`).join('') + '</div>'
+    : '<div class="empty"><b>Архів порожній</b>Щоб прибрати допис з профілю, не видаляючи його, відкрий допис → «⋯» → «В архів», або натисни «☑ Вибрати» в смужці «Редактор».</div>';
+}
+function openArchive() { $('#archive').classList.remove('hide'); syncLock(); renderArchive(); }
+function closeArchive() { $('#archive').classList.add('hide'); syncLock(); }
+function openMenu() {
+  openSheet('Меню', `<div class="menu"><div class="row" data-act="openArchive"><span>📦</span><b>Архів</b><small>${S.archive.length} шт.</small></div></div>
+    <p class="hint" style="margin-top:12px">Архів: дописи, яких не видно в профілі. Їх можна повернути в будь-який момент.</p>`);
 }
 
 /* ---------- reorder (drag & drop у сітці) ---------- */
@@ -1170,7 +1242,7 @@ async function forceUpdate() {   // скидає кеш програми й пе
 function blobToDataURL(b) { return new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(b); }); }
 function stripVideos(st) {
   const c = JSON.parse(JSON.stringify(st));
-  [...c.posts, ...c.tagged].forEach(p => { delete p.vids; });
+  [...c.posts, ...c.tagged, ...(c.archive || [])].forEach(p => { delete p.vids; });
   [...c.highlights, c.my].forEach(set => (set.stories || []).forEach(s => { s.vid = null; }));
   return c;
 }
@@ -1224,6 +1296,10 @@ function setTab(t) {
 document.addEventListener('click', e => {
   if (e.target.id === 'sheet') return closeSheet();
   const cell = e.target.closest('.cell');
+  if (cell && cell.closest('#archive')) return openPost(cell.dataset.id);
+  if (cell && selMode && !cell.classList.contains('ghost')) {
+    const cid = cell.dataset.id; sel.has(cid) ? sel.delete(cid) : sel.add(cid); return renderGrid();
+  }
   if (cell && !reorder && !cell.classList.contains('ghost')) {
     if (ptab === 'reels') return openReels(cell.dataset.id);
     return openViewer(cell.dataset.id, ptab === 'tagged' ? 'tagged' : 'posts');
@@ -1232,13 +1308,21 @@ document.addEventListener('click', e => {
   const d = el.dataset, id = d.id;
   switch (d.act) {
     case 'tab': setTab(d.tab); break;
-    case 'ptab': ptab = d.p; reorder = false; renderGrid(); break;
+    case 'ptab': ptab = d.p; reorder = false; selMode = false; sel.clear(); renderGrid(); break;
     case 'editProfile': editProfile(); break;
     case 'addMedia': addMedia(); break;
     case 'toggleReorder':
       if (ptab !== 'grid') { toast('Порядок змінюється у вкладці сітки'); break; }
-      reorder = !reorder; renderGrid(); if (reorder) toast('Тримай фото й перетягуй'); break;
-    case 'toggleClean': { const on = document.body.classList.toggle('clean'); if (on && reorder) { reorder = false; renderGrid(); } break; }
+      reorder = !reorder; if (reorder) { selMode = false; sel.clear(); } renderGrid(); if (reorder) toast('Тримай фото й перетягуй'); break;
+    case 'toggleClean': { const on = document.body.classList.toggle('clean'); if (on && (reorder || selMode)) { reorder = false; selMode = false; sel.clear(); renderGrid(); } break; }
+    case 'menu': openMenu(); break;
+    case 'openArchive': closeSheet(); openArchive(); break;
+    case 'closeArchive': closeArchive(); break;
+    case 'archivePost': archivePost(); break;
+    case 'restorePost': restorePost(); break;
+    case 'toggleSel': toggleSel(); break;
+    case 'cancelSel': cancelSel(); break;
+    case 'archiveSel': archiveSel(); break;
     case 'closeSheet': closeSheet(); break;
     case 'closeViewer': closeViewer(); break;
     case 'closeReels': closeReels(); break;
