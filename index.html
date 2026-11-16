@@ -238,6 +238,11 @@ body.selecting{padding-bottom:calc(128px + var(--safe-b))}
 .crow button{flex:1;padding:9px 6px;border-radius:8px;background:#262626;color:#fff;font-size:14px;font-weight:600}
 .slide .cr{position:absolute;top:8px;left:8px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.65);color:#fff;font-size:15px;display:grid;place-items:center}
 
+#coverer{position:fixed;inset:0;z-index:24;background:#000;color:#fff;display:flex;flex-direction:column;user-select:none;-webkit-user-select:none}
+#coverer .cstage video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+.ctime{display:flex;justify-content:space-between;font-size:14px;color:#bbb;font-variant-numeric:tabular-nums}
+.chint{text-align:center;color:#999;font-size:13px;margin:0}
+
 /* reels viewer */
 #rviewer{position:fixed;inset:0;z-index:16;background:#000;color:#fff}
 #rlist{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain}
@@ -350,13 +355,24 @@ body.selecting{padding-bottom:calc(128px + var(--safe-b))}
 </div>
 <div id="sviewer" class="hide"></div>
 <button id="exitClean" data-act="toggleClean" aria-label="Вийти з чистого вигляду">✕</button>
+<div id="coverer" class="hide">
+  <div class="ctop"><button data-act="coverSkip" id="cvskip">Залишити авто</button><span>Обкладинка</span><button class="cok" data-act="coverOk">Готово</button></div>
+  <div class="cstage"><video id="cvvideo" playsinline muted preload="auto"></video></div>
+  <div class="cbot">
+    <p class="chint">Пересуй повзунок, щоб вибрати кадр для обкладинки</p>
+    <div class="ctime"><span id="cvt">0:00</span><span id="cvdur"></span></div>
+    <input type="range" id="cvrange" min="0" max="1" step="0.01" value="0" aria-label="Кадр відео">
+    <div class="crow"><button data-act="coverStep" data-d="-0.2">◀ −0,2 с</button><button data-act="coverStep" data-d="0.2">+0,2 с ▶</button></div>
+    <div class="crow"><button data-act="coverCustom">🖼 Своє фото…</button><button data-act="coverSkipAll" id="cvskipall">Пропустити всі</button></div>
+  </div>
+</div>
 <div id="cropper" class="hide">
   <div class="ctop"><button data-act="cropCancel">Скасувати</button><span id="ctitle"></span><button class="cok" data-act="cropOk" id="cok">Далі</button></div>
   <div class="cstage" id="cstage"><img id="cimg" alt=""><div class="cframe" id="cframe"></div></div>
   <div class="cbot">
     <input type="range" id="czoom" min="1" max="6" step="0.01" value="1" aria-label="Масштаб">
     <div class="cratios" id="cratios">
-      <button data-act="cropRatio" data-r="3:4">3:4</button><button data-act="cropRatio" data-r="4:5">4:5</button><button data-act="cropRatio" data-r="1:1">1:1</button><button data-act="cropRatio" data-r="orig">Оригінал</button>
+      <button data-act="cropRatio" data-r="9:16">9:16</button><button data-act="cropRatio" data-r="3:4">3:4</button><button data-act="cropRatio" data-r="4:5">4:5</button><button data-act="cropRatio" data-r="1:1">1:1</button><button data-act="cropRatio" data-r="orig">Оригінал</button>
     </div>
     <div class="crow" id="crow"><button data-act="cropSkip">Без обрізання</button><button data-act="cropSkipAll" id="cskipall">Пропустити всі</button></div>
   </div>
@@ -369,7 +385,7 @@ body.selecting{padding-bottom:calc(128px + var(--safe-b))}
 
 <script>
 'use strict';
-const APP_VERSION = '2.3 · 20.10.2026';   // збільшуй при кожному оновленні, щоб було видно, що телефон отримав нову версію
+const APP_VERSION = '2.4 · 16.11.2026';   // збільшуй при кожному оновленні, щоб було видно, що телефон отримав нову версію
 
 /* ---------- helpers ---------- */
 const $ = (s, r = document) => r.querySelector(s);
@@ -574,7 +590,7 @@ const pickMedia = accept => pickFiles($('#fileMedia'), accept);
 /* ---------- обрізання фото ---------- */
 let CR = null, cropRatio = '3:4';
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-const RATIOS = { '3:4': 3 / 4, '4:5': 4 / 5, '1:1': 1 };
+const RATIOS = { '9:16': 9 / 16, '3:4': 3 / 4, '4:5': 4 / 5, '1:1': 1 };
 // Показує екран обрізання. Повертає {blob} | 'skip' | 'skipAll' | null (скасовано)
 function cropImage(src, o = {}) {
   return new Promise(resolve => {
@@ -587,7 +603,7 @@ function cropImage(src, o = {}) {
       $('#cskipall').classList.toggle('hide', !(o.n > 1 && o.i < o.n));
       $('#czoom').value = 1;
       $('#cropper').classList.remove('hide'); syncLock();
-      setRatio(cropRatio);
+      setRatio(o.ratio || cropRatio);
     };
     img.onerror = () => { URL.revokeObjectURL(url); resolve('skip'); };   // не вдалось відкрити: додамо як є
     img.src = url;
@@ -595,7 +611,6 @@ function cropImage(src, o = {}) {
 }
 function setRatio(r) {
   if (!CR) return;
-  cropRatio = r;
   document.querySelectorAll('#cratios [data-r]').forEach(b => b.classList.toggle('on', b.dataset.r === r));
   const st = $('#cstage').getBoundingClientRect(); CR.W = st.width; CR.H = st.height;
   const A = r === 'orig' ? CR.iw / CR.ih : RATIOS[r], pad = 24;
@@ -632,6 +647,7 @@ async function cropOk() {
   cropEnd(blob ? { blob } : 'skip');
 }
 (function () {
+  $('#cvrange').addEventListener('input', e => coverSeek(+e.target.value));
   const st = $('#cstage');
   st.addEventListener('pointerdown', e => { if (!CR) return; try { st.setPointerCapture(e.pointerId); } catch {} CR.ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); });
   st.addEventListener('pointermove', e => {
@@ -654,7 +670,8 @@ async function cropOk() {
 })();
 // Обрізання одного файлу в послідовності додавання. null = користувач скасував
 async function mediaWithCrop(f, ctx) {
-  if (isVideo(f) || ctx.skipAll) return fileToMedia(f);
+  if (isVideo(f)) { const m = await fileToMedia(f); if (!ctx.noCover) await chooseCover(m, f, ctx); return m; }
+  if (ctx.skipAll) return fileToMedia(f);
   ctx.i++;
   const r = await cropImage(f, { i: ctx.i, n: ctx.n, canSkip: true });
   if (r === null) return null;
@@ -662,7 +679,83 @@ async function mediaWithCrop(f, ctx) {
   if (r === 'skip') return fileToMedia(f);
   return { img: await addImg(r.blob), vid: null };
 }
-const cropCtx = files => ({ i: 0, n: files.filter(f => !isVideo(f)).length, skipAll: false });
+const cropCtx = files => ({ i: 0, n: files.filter(f => !isVideo(f)).length, skipAll: false, vi: 0, nv: files.filter(isVideo).length, noCover: false });
+
+/* ---------- обкладинка відео ---------- */
+let CV = null;
+const fmtT = t => { t = Math.max(0, t || 0); const m = Math.floor(t / 60), sec = (t % 60); return m + ':' + (sec < 10 ? '0' : '') + sec.toFixed(1); };
+// Повертає {blob} | 'skip' | 'skipAll'. o: {i, n, canSkip}
+function coverPick(src, o = {}) {
+  return new Promise(resolve => {
+    const url = URL.createObjectURL(src), v = $('#cvvideo');
+    v.onloadedmetadata = async () => {
+      const dur = isFinite(v.duration) && v.duration > 0 ? v.duration : 1;
+      CV = { url, resolve, dur, o };
+      $('#cvrange').max = dur; $('#cvrange').value = 0;
+      $('#cvdur').textContent = fmtT(dur);
+      $('#cvskip').textContent = o.canSkip ? 'Залишити авто' : 'Скасувати';
+      $('#cvskipall').classList.toggle('hide', !(o.n > 1 && o.i < o.n));
+      $('#coverer').classList.remove('hide'); syncLock();
+      try { await v.play(); v.pause(); } catch {}     // «розбудити» декодер (iOS)
+      coverSeek(Math.min(.1, dur / 2));
+    };
+    v.onerror = () => { URL.revokeObjectURL(url); v.removeAttribute('src'); resolve('skip'); };
+    v.src = url; v.load();
+  });
+}
+function coverSeek(t) {
+  if (!CV) return;
+  t = clamp(t, 0, CV.dur); $('#cvrange').value = t; $('#cvt').textContent = fmtT(t);
+  try { $('#cvvideo').currentTime = t; } catch {}
+}
+function coverEnd(result) {
+  if (!CV) return;
+  const { url, resolve } = CV; CV = null;
+  const v = $('#cvvideo'); v.pause(); v.removeAttribute('src'); v.load(); URL.revokeObjectURL(url);
+  $('#coverer').classList.add('hide'); syncLock();
+  resolve(result);
+}
+async function coverOk() {
+  if (!CV) return;
+  const v = $('#cvvideo');
+  if (v.seeking) await waitEv(v, 'seeked', 2500);
+  await waitFrame(v);
+  const w = v.videoWidth, h = v.videoHeight; if (!w || !h) return toast('Не вдалося взяти кадр. Спробуй інший або своє фото');
+  const k = Math.min(1, 1080 / Math.max(w, h)), c = document.createElement('canvas');
+  c.width = Math.round(w * k); c.height = Math.round(h * k);
+  c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+  if (frameBlank(c)) return toast('Цей кадр порожній. Пересуй повзунок або вибери своє фото');
+  const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', .88));
+  if (!blob) return toast('Не вдалося взяти кадр');
+  coverEnd({ blob });
+}
+async function coverCustom() {
+  if (!CV) return;
+  const [f] = await pickFiles($('#fileOne'), 'image/*'); if (!f || !CV) return;
+  const r = await cropImage(f, { i: 1, n: 1, canSkip: false, ratio: '9:16' });   // вертикальна рамка, як у Reels
+  if (!CV) return;
+  if (r && r.blob) return coverEnd({ blob: r.blob });
+  if (r === 'skip') { try { return coverEnd({ blob: await fileToBlob(f, 1440) }); } catch { toast('Не вдалося відкрити фото'); } }
+}
+async function setPoster(imgId, blob) {
+  await imgPut(imgId, blob);
+  if (urls[imgId]) URL.revokeObjectURL(urls[imgId]);
+  urls[imgId] = URL.createObjectURL(blob);
+  S.pf = S.pf || {}; S.pf[imgId] = 'ok';
+}
+async function chooseCover(m, file, ctx) {   // після додавання відео: дати вибрати обкладинку
+  ctx.vi++;
+  const r = await coverPick(file, { i: ctx.vi, n: ctx.nv, canSkip: true });
+  if (r === 'skipAll') ctx.noCover = true;
+  else if (r && r.blob) await setPoster(m.img, r.blob);
+}
+async function coverSlide(img) {   // змінити обкладинку вже доданого відео
+  const p = $('#sheet')._post; if (!p || !p.vids || !p.vids[img]) return;
+  const vb = await imgGet(p.vids[img]); if (!vb) return toast('Відео немає (воно не входить у резервну копію)');
+  const r = await coverPick(vb, { i: 1, n: 1, canSkip: false });
+  if (!r || !r.blob) return;
+  await setPoster(img, r.blob); save(); renderAll(); openPost(p.id); toast('Обкладинку змінено ✓');
+}
 
 /* ---------- icons ---------- */
 const ICON_CAROUSEL = '<svg class="car" viewBox="0 0 24 24" fill="#fff"><path d="M7 3h12a2 2 0 0 1 2 2v12h-2V5H7z"/><rect x="3" y="7" width="14" height="14" rx="2"/></svg>';
@@ -718,7 +811,7 @@ const reelsOpen = () => !$('#rviewer').classList.contains('hide');
 const storiesOpen = () => !$('#sviewer').classList.contains('hide');
 const sheetOpen = () => !$('#sheet').classList.contains('hide');
 const archiveOpen = () => !$('#archive').classList.contains('hide');
-const cropperOpen = () => !$('#cropper').classList.contains('hide');
+const cropperOpen = () => !$('#cropper').classList.contains('hide') || !$('#coverer').classList.contains('hide');
 function syncLock() { document.body.style.overflow = (viewerOpen() || reelsOpen() || storiesOpen() || sheetOpen() || archiveOpen() || cropperOpen()) ? 'hidden' : ''; }
 
 /* ---------- render: profile / grid ---------- */
@@ -1138,7 +1231,7 @@ function openPost(id) {
   const list = tagged ? S.tagged : archived ? S.archive : S.posts, i = list.indexOf(p);
   const wasOpen = sheetOpen() && $('#sheet')._post;
   const html = `
-    <div class="slides ${p.imgs.length === 1 ? 'one' : ''}">${p.imgs.map(im => `<div class="slide">${mediaThumb(im, p.vids && p.vids[im])}${p.vids && p.vids[im] ? '<span class="play">▶ відео</span>' : `<button class="cr" data-act="cropSlide" data-img="${im}" aria-label="Обрізати">✂</button>`}${p.imgs.length > 1 ? `<button class="x" data-act="rmSlide" data-img="${im}">×</button>` : ''}</div>`).join('')}</div>
+    <div class="slides ${p.imgs.length === 1 ? 'one' : ''}">${p.imgs.map(im => `<div class="slide">${mediaThumb(im, p.vids && p.vids[im])}${p.vids && p.vids[im] ? `<span class="play">▶ відео</span><button class="cr" data-act="coverSlide" data-img="${im}" aria-label="Обкладинка">🎞</button>` : `<button class="cr" data-act="cropSlide" data-img="${im}" aria-label="Обрізати">✂</button>`}${p.imgs.length > 1 ? `<button class="x" data-act="rmSlide" data-img="${im}">×</button>` : ''}</div>`).join('')}</div>
     ${archived ? '<p class="hint">Цей допис в архіві: його не видно в профілі.</p><button class="btn primary" data-act="restorePost" style="width:100%;margin-bottom:8px">↩ Повернути в профіль</button>' : ''}
     ${plain ? `<div class="pos"><button class="btn" data-act="mv" data-d="-1" ${i === 0 ? 'disabled style="opacity:.4"' : ''}>← раніше</button><span>позиція ${i + 1} з ${list.length}</span><button class="btn" data-act="mv" data-d="1" ${i === list.length - 1 ? 'disabled style="opacity:.4"' : ''}>пізніше →</button></div>` : ''}
     ${tagged ? `<label class="f"><small>Хто опублікував (нік)</small><input data-pk="owner" value="${esc(p.owner || '')}"></label>` : ''}
@@ -1421,6 +1514,10 @@ async function restore() {
   } catch { toast('Це не схоже на файл копії'); }
 }
 
+/* ---------- збереження при згортанні / закритті ---------- */
+document.addEventListener('visibilitychange', () => { if (document.hidden) flushSave().catch(() => {}); });
+window.addEventListener('pagehide', () => { flushSave().catch(() => {}); });
+
 /* ---------- events ---------- */
 function setTab(t) {
   $('#v-feed').classList.toggle('hide', t !== 'feed');
@@ -1452,11 +1549,17 @@ document.addEventListener('click', e => {
       reorder = !reorder; if (reorder) { selMode = false; sel.clear(); } renderGrid(); if (reorder) toast('Тримай фото й перетягуй'); break;
     case 'toggleClean': { const on = document.body.classList.toggle('clean'); if (on && (reorder || selMode)) { reorder = false; selMode = false; sel.clear(); renderGrid(); } break; }
     case 'menu': openMenu(); break;
+    case 'coverOk': coverOk(); break;
+    case 'coverSkip': coverEnd('skip'); break;
+    case 'coverSkipAll': coverEnd('skipAll'); break;
+    case 'coverStep': coverSeek(+$('#cvrange').value + +d.d); break;
+    case 'coverCustom': coverCustom(); break;
+    case 'coverSlide': coverSlide(d.img); break;
     case 'cropOk': cropOk(); break;
     case 'cropCancel': cropEnd(null); break;
     case 'cropSkip': cropEnd('skip'); break;
     case 'cropSkipAll': cropEnd('skipAll'); break;
-    case 'cropRatio': setRatio(d.r); break;
+    case 'cropRatio': cropRatio = d.r; setRatio(d.r); break;
     case 'cropSlide': cropSlide(d.img); break;
     case 'openArchive': closeSheet(); openArchive(); break;
     case 'closeArchive': closeArchive(); break;
