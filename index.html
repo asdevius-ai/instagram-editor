@@ -285,6 +285,59 @@ body.selecting{padding-bottom:calc(128px + var(--safe-b))}
 
 #toast{position:fixed;left:50%;bottom:calc(84px + var(--safe-b));transform:translateX(-50%);background:#262626;color:#fff;padding:9px 16px;border-radius:20px;z-index:40;font-size:14px;max-width:90%;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s}
 #toast.s{opacity:1}
+
+/* ===== анімації та дрібні ефекти ===== */
+:root{--glass:rgba(255,255,255,.8);--ease:cubic-bezier(.22,1,.36,1)}
+@media (prefers-color-scheme:dark){:root{--glass:rgba(0,0,0,.72)}}
+html{scroll-behavior:smooth}
+.top,.nav,.vtop{background:var(--glass);-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes slideIn{from{opacity:.4;transform:translateX(28%)}to{opacity:1;transform:none}}
+@keyframes zoomIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
+@keyframes cellIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(1)}35%{transform:scale(1.4)}65%{transform:scale(.92)}100%{transform:scale(1)}}
+@keyframes heartBurst{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}22%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}45%{transform:translate(-50%,-50%) scale(.95)}70%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}100%{opacity:0;transform:translate(-50%,-62%) scale(1.15)}}
+/* вхід профілю: елементи з'являються каскадом */
+.prof>*{animation:fadeUp .55s var(--ease) backwards}
+.prof>*:nth-child(1){animation-delay:.03s}.prof>*:nth-child(2){animation-delay:.08s}.prof>*:nth-child(3){animation-delay:.12s}
+.prof>*:nth-child(4){animation-delay:.16s}.prof>*:nth-child(5){animation-delay:.2s}.prof>*:nth-child(6){animation-delay:.24s}
+.prof>*:nth-child(7){animation-delay:.28s}.prof>*:nth-child(8){animation-delay:.32s}
+#v-feed{animation:fadeIn .25s ease both}
+#v-move{animation:fadeUp .32s var(--ease) backwards}
+.cell.in{animation:cellIn .45s var(--ease) backwards;animation-delay:var(--d,0s)}
+/* вікна й перегляди */
+#sheet{animation:fadeIn .22s ease}
+.sheet{animation:slideUp .36s var(--ease)}
+.sheet.noanim{animation:none}
+#viewer,#archive{animation:slideIn .3s var(--ease)}
+#rviewer,#sviewer{animation:zoomIn .28s var(--ease)}
+#cropper,#coverer{animation:fadeIn .22s ease}
+.smedia{animation:fadeIn .28s ease}
+.stext{animation:zoomIn .4s var(--ease) .1s backwards}
+/* дотик: кнопки «пружинять» */
+.btn,.chip,.hl button,.acc,.menu .row,.nav button,.tabs div,.ic,.cratios button,.crow button,.cell{transition:transform .14s var(--ease),opacity .14s ease,background-color .2s ease,color .2s ease,box-shadow .25s ease}
+.btn:active,.chip:active,.hl button:active,.acc:active,.menu .row:active,.nav button:active,.tabs div:active,.cratios button:active,.crow button:active{transform:scale(.95);opacity:.82}
+.ic:active{transform:scale(.86)}
+.cell:active{transform:scale(.97)}
+.cell.ghost,.cell.ghost:active{transform:scale(1.06)}
+/* серце: пульс на лайк і велике серце на подвійний тап */
+.ic.lk-on svg{animation:pop .45s var(--ease)}
+.burst{position:absolute;left:50%;top:50%;width:112px;height:112px;pointer-events:none;color:#fff;filter:drop-shadow(0 6px 18px rgba(0,0,0,.45));animation:heartBurst .85s ease-out forwards;z-index:3}
+.burst svg{width:100%;height:100%;fill:currentColor;stroke:none}
+/* кільце сторіз повільно обертається */
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
+.avwrap.ring{background:conic-gradient(from var(--a),#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5,#feda75);animation:ringspin 7s linear infinite}
+.avs.ring{background:conic-gradient(#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5,#feda75)}
+@keyframes ringspin{to{--a:360deg}}
+/* тост із пружиною */
+#toast{transform:translate(-50%,14px);transition:opacity .22s ease,transform .38s cubic-bezier(.2,1.1,.3,1.15)}
+#toast.s{transform:translate(-50%,0)}
+.tabs div{transition:color .2s ease,box-shadow .3s var(--ease),transform .14s var(--ease)}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
 </style>
 </head>
 <body>
@@ -385,7 +438,7 @@ body.selecting{padding-bottom:calc(128px + var(--safe-b))}
 
 <script>
 'use strict';
-const APP_VERSION = '2.4 · 16.11.2026';   // збільшуй при кожному оновленні, щоб було видно, що телефон отримав нову версію
+const APP_VERSION = '2.5 · 17.11.2026';   // збільшуй при кожному оновленні, щоб було видно, що телефон отримав нову версію
 
 /* ---------- helpers ---------- */
 const $ = (s, r = document) => r.querySelector(s);
@@ -436,6 +489,7 @@ let S = blank();
 const urls = {};                 // id -> objectURL
 let reorder = false, ptab = 'grid', saveT;
 let selMode = false; const sel = new Set();
+let seenCells = new Set();   // які фото вже з'являлись (щоб анімувати тільки нові)
 
 const stateKey = id => 'state:' + id;
 async function loadState(id) { return Object.assign(blank(), (await kvGet(stateKey(id))) || {}); }
@@ -853,11 +907,12 @@ function renderGrid() {
   $('#selcnt').textContent = sel.size ? `Вибрано: ${sel.size}` : 'Тапни фото, які треба прибрати';
   const list = ptab === 'grid' ? S.posts : ptab === 'reels' ? S.posts.filter(p => p.reel) : S.tagged;
   if (!list.length) { g.innerHTML = `<div class="empty"><b>${EMPTY[ptab][0]}</b>${EMPTY[ptab][1]}</div>`; return; }
-  g.innerHTML = `<div class="grid ${ptab === 'reels' ? 'reels' : ''}">` + list.map(p => {
+  g.innerHTML = `<div class="grid ${ptab === 'reels' ? 'reels' : ''}">` + list.map((p, idx) => {
     let mark = '';
     if (ptab === 'reels') mark = `<span class="views">▶ ${esc(p.views || '0')}</span>`;
     else mark = (ptab === 'grid' && p.pinned ? ICON_PIN : '') + (p.reel ? ICON_REEL : p.imgs.length > 1 ? ICON_CAROUSEL : '');
-    return `<div class="cell ${selMode && sel.has(p.id) ? 'sel' : ''}" data-id="${p.id}">${mediaThumb(p.imgs[0], p.vids && p.vids[p.imgs[0]])}${mark}${selMode ? `<span class="ck">${sel.has(p.id) ? '✓' : ''}</span>` : ''}</div>`;
+    const fresh = !seenCells.has(p.id); seenCells.add(p.id);
+    return `<div class="cell ${selMode && sel.has(p.id) ? 'sel' : ''} ${fresh ? 'in' : ''}" ${fresh ? `style="--d:${Math.min(idx, 18) * 35}ms"` : ''} data-id="${p.id}">${mediaThumb(p.imgs[0], p.vids && p.vids[p.imgs[0]])}${mark}${selMode ? `<span class="ck">${sel.has(p.id) ? '✓' : ''}</span>` : ''}</div>`;
   }).join('') + '</div>';
 }
 function renderAll() {
@@ -1023,7 +1078,8 @@ function closeStories() {
 function openSheet(title, body, onClose) {
   const s = $('#sheet');
   if (!s.classList.contains('hide') && s._onClose) { const cb = s._onClose; s._onClose = null; cb(); }
-  s.innerHTML = `<div class="sheet"><div class="bar"><b>${esc(title)}</b><button data-act="closeSheet">Готово</button></div>${body}</div>`;
+  const again = !s.classList.contains('hide');
+  s.innerHTML = `<div class="sheet${again ? ' noanim' : ''}"><div class="bar"><b>${esc(title)}</b><button data-act="closeSheet">Готово</button></div>${body}</div>`;
   s.classList.remove('hide');
   s._onClose = onClose; s._post = null; s._set = null; s._hl = null; s._cv = null; s._avRefresh = null; s.oninput = null;
   syncLock();
@@ -1170,7 +1226,7 @@ async function switchTo(id) {
   await flushSave(); closeAllOverlays();
   S = await loadState(id); ACC.active = id; await kvSet('accounts', ACC);
   resetUrls(); await loadUrls(S);
-  ptab = 'grid'; reorder = false;
+  ptab = 'grid'; reorder = false; seenCells.clear();
   renderAll(); scrollTo(0, 0); fixPosters();
 }
 async function newAccount() {
@@ -1245,7 +1301,7 @@ function openPost(id) {
     ${plain ? `<label class="f chk"><input type="checkbox" data-pk="pinned" ${p.pinned ? 'checked' : ''}> Закріпити в профілі (до 3)</label>` : ''}
     <div style="display:flex;gap:6px;margin-top:6px"><button class="btn" data-act="addSlide">＋ Ще фото/відео (карусель)</button></div>
     <div style="display:flex;gap:6px;margin-top:6px">${plain ? '<button class="btn" data-act="archivePost">📦 В архів</button>' : ''}<button class="btn danger" data-act="delPost">Видалити назовсім</button></div>`;
-  if (wasOpen) { const keep = $('.sheet').scrollTop; $('#sheet').innerHTML = `<div class="sheet"><div class="bar"><b>Допис</b><button data-act="closeSheet">Готово</button></div>${html}</div>`; $('.sheet').scrollTop = keep; }
+  if (wasOpen) { const keep = $('.sheet').scrollTop; $('#sheet').innerHTML = `<div class="sheet noanim"><div class="bar"><b>Допис</b><button data-act="closeSheet">Готово</button></div>${html}</div>`; $('.sheet').scrollTop = keep; }
   else openSheet('Допис', html);
   const sh = $('#sheet'); sh._post = p;
   const cnt = () => { const c = $('#capCnt'); if (c) c.textContent = [...p.caption].length + '/2200'; };
@@ -1350,7 +1406,7 @@ function startDrag(e) {
   e.preventDefault();
   const r = cell.getBoundingClientRect();
   const ghost = cell.cloneNode(true);
-  ghost.classList.add('ghost');
+  ghost.classList.remove('in'); ghost.classList.add('ghost');
   Object.assign(ghost.style, { width: r.width + 'px', height: r.height + 'px', left: r.left + 'px', top: r.top + 'px' });
   document.body.appendChild(ghost);
   cell.classList.add('ph');
@@ -1363,11 +1419,19 @@ function moveDrag(e) {
   drag.y = e.clientY;
   drag.ghost.style.left = (e.clientX - drag.dx) + 'px';
   drag.ghost.style.top = (e.clientY - drag.dy) + 'px';
-  const under = document.elementsFromPoint(e.clientX, e.clientY).find(el => el.classList.contains('cell') && el !== drag.cell && !el.classList.contains('ghost'));
-  if (under) {
-    const grid = under.parentNode, cells = [...grid.children];
-    const a = cells.indexOf(drag.cell), b = cells.indexOf(under);
-    grid.insertBefore(drag.cell, a < b ? under.nextSibling : under);
+  // ціль визначаємо за геометрією сітки (3 колонки), а не за елементами під пальцем: так анімація сусідів не заважає
+  const grid = drag.cell.parentNode, gr = grid.getBoundingClientRect(), cells = [...grid.children];
+  const cw = gr.width / 3, ch = drag.cell.offsetHeight + 2;
+  const col = clamp(Math.floor((e.clientX - gr.left) / cw), 0, 2), row = Math.max(0, Math.floor((e.clientY - gr.top) / ch));
+  const idx = clamp(row * 3 + col, 0, cells.length - 1);
+  if (idx !== cells.indexOf(drag.cell)) {
+    const first = new Map(cells.map(c => [c, c.getBoundingClientRect()]));
+    grid.insertBefore(drag.cell, cells.filter(c => c !== drag.cell)[idx] || null);
+    cells.forEach(c => {
+      if (c === drag.cell) return;
+      const r = c.getBoundingClientRect(), f = first.get(c), dx = f.left - r.left, dy = f.top - r.top;
+      if ((dx || dy) && c.animate) c.animate([{ transform: `translate(${dx}px,${dy}px)` }, { transform: 'none' }], { duration: 220, easing: 'cubic-bezier(.22,1,.36,1)' });
+    });
   }
 }
 function endDrag() {
@@ -1526,8 +1590,22 @@ function setTab(t) {
   if (t === 'move') renderMove();
   scrollTo(0, 0);
 }
+let lastTap = { el: null, t: 0 };
+function heartBurst(host) {
+  const b = document.createElement('div'); b.className = 'burst'; b.innerHTML = IC.heart;
+  host.appendChild(b); setTimeout(() => b.remove(), 900);
+}
 document.addEventListener('click', e => {
   if (e.target.id === 'sheet') return closeSheet();
+  const dtap = e.target.closest('.fslide, .rmedia');   // подвійний тап по фото/відео = лайк із великим серцем
+  if (dtap) {
+    const now = performance.now();
+    if (lastTap.el === dtap && now - lastTap.t < 320) {
+      heartBurst(dtap);
+      const lb = dtap.closest('.fp, .rl')?.querySelector('[data-act=like]'); if (lb) lb.classList.add('lk-on');
+      lastTap = { el: null, t: 0 };
+    } else lastTap = { el: dtap, t: now };
+  }
   const cell = e.target.closest('.cell');
   if (cell && cell.closest('#archive')) return openPost(cell.dataset.id);
   if (cell && selMode && !cell.classList.contains('ghost')) {
@@ -1541,7 +1619,7 @@ document.addEventListener('click', e => {
   const d = el.dataset, id = d.id;
   switch (d.act) {
     case 'tab': setTab(d.tab); break;
-    case 'ptab': ptab = d.p; reorder = false; selMode = false; sel.clear(); renderGrid(); break;
+    case 'ptab': ptab = d.p; reorder = false; selMode = false; sel.clear(); seenCells.clear(); renderGrid(); break;
     case 'editProfile': editProfile(); break;
     case 'addMedia': addMedia(); break;
     case 'toggleReorder':
